@@ -37,4 +37,17 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lexicalAnalyzer.h">
+      <Filter>Header Files\Lexical Analyzer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files\Main Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LexicalAnalyzer.c">
+      <Filter>Source Files\Lexical Analyzer</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
