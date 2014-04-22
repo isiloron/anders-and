@@ -72,8 +72,15 @@
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="break_tokenState.c" />
+    <ClCompile Include="else_tokenState.cpp" />
+    <ClCompile Include="IfOrInt_tokenState.c" />
     <ClCompile Include="LexicalAnalyzer.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="ReadOrReturn_tokenState.c" />
+    <ClCompile Include="specialSign_tokenState.c" />
+    <ClCompile Include="void_tokenState.c" />
+    <ClCompile Include="WhileOrWrite_tokenState.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

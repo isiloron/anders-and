@@ -6,7 +6,6 @@ void readToken()
 	FILE* filePtr = openFile();
 	peekOnNextChar(filePtr);
 }
-
 TOKEN* createToken()
 {
 	TOKEN* token = malloc(sizeof(TOKEN));
@@ -34,7 +33,6 @@ TOKEN* createToken()
 		}
 	}
 }
-
 char peekOnNextChar(FILE* filePtr)
 {
 	int nextChar = fgetc(filePtr);
@@ -42,7 +40,6 @@ char peekOnNextChar(FILE* filePtr)
 	
 	return (char)nextChar;
 }
-
 FILE* openFile()
 {
 	FILE* filePtr = fopen("code2BCompiled.txt", "r");
@@ -57,3 +54,5 @@ FILE* openFile()
 		return filePtr;
 	}
 }
+
+
