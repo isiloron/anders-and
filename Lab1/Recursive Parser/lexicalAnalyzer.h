@@ -1,6 +1,9 @@
 #include "main.h"
 
 
-char* readToken();
+void readToken();
+TOKEN* createToken();
+FILE* openFile();
+char peekOnNextChar(FILE* filePtr);
 
 

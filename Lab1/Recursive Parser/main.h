@@ -28,6 +28,9 @@
 #define ID 24
 #define NUM 25
 
+#define BUFFERSIZE 30
+#define ATTRSIZE 30
+
 typedef struct token
 {
     char *lexeme;
