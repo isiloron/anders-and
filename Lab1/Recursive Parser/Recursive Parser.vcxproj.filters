@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{4b2a3445-1a8b-4f02-97ca-2bf1393b02bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lexical Analyzer">
+      <UniqueIdentifier>{1a927b66-bf00-4172-8f93-3254be6f7a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{ca836a13-0c67-4986-b5d9-1f8868308f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Main Headers">
+      <UniqueIdentifier>{570d36fc-2d9d-40ed-8a3d-295b0190287b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lexical Analyzer Headers">
+      <UniqueIdentifier>{ff4c1634-6f72-4a19-a8f9-89fc854e2b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser Headers">
+      <UniqueIdentifier>{caec27f6-909f-4df9-ac9d-f7713941cd04}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
