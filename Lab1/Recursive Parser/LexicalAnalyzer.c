@@ -3,7 +3,7 @@
 char* readToken()
 {
 	FILE* filePtr;
-	filePtr = fopen("/Resource Files/code2BCompiled.txt", "r");
+	filePtr = fopen("code2BCompiled.txt", "r");
 
 	if (filePtr == NULL) 
 	{
@@ -13,12 +13,12 @@ char* readToken()
 	// EOF is not considered a char, but an int, and since all
 	// char values can be stored in int, we define nextChar to be an int
 
-	char token[20];		//for reading token (max 20 letters long)
+	char token[30];		//for reading token (max 20 letters long)
 	int nextChar;  
 
 	int numOfCharsRead = 0;
 
-	while(1) 
+	while (numOfCharsRead<30)
 	{
 		nextChar = getc(filePtr);
 		numOfCharsRead++;
@@ -26,12 +26,16 @@ char* readToken()
 		switch(nextChar)
 		{
 			case ';':
-				printf("Chars read: %i", numOfCharsRead);
-				printf("Slut på statement!");
-				
+				printf("Chars read: %i \n", numOfCharsRead);
+				printf("End of statement! \n");
+				fclose(filePtr);
+				getchar();
 				return token;
 			break;
 		}
-	}          
+	}
+	printf("To many characters have been read! \n");
+	getchar();
+	return NULL;
 }
 

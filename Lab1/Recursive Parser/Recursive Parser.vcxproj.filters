@@ -49,5 +49,8 @@
     <ClCompile Include="LexicalAnalyzer.c">
       <Filter>Source Files\Lexical Analyzer</Filter>
     </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
