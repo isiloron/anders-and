@@ -32,4 +32,9 @@
       <UniqueIdentifier>{caec27f6-909f-4df9-ac9d-f7713941cd04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="code2BCompiled.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
