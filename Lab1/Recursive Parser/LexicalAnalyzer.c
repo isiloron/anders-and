@@ -25,7 +25,7 @@ TOKEN* createEmptyToken()
 	else
 	{
 		emptyToken->attribute = 0;
-		emptyToken->lexeme = NULL;
+		emptyToken->lexeme = malloc(sizeof(BUFFERSIZE));
 		emptyToken->type = 0;
 		return emptyToken;
 	}
@@ -41,9 +41,11 @@ TOKEN* getToken()
 	{
 		nextCharacter = peekOnNextChar(filePtr);
 
-		if ( (nextCharacter == '/t') || (nextCharacter == ' ') )
+		if (feof(filePtr))
+			return newToken;
+		else if ((nextCharacter == '/t') || (nextCharacter == ' ') )
 		{
-			index = 0;
+			newToken->lexeme[index] = '\0';
 
 			//if we did'nt read a token earlier, consume character, and continue reading 
 			if (newToken->type == 0)
@@ -92,6 +94,11 @@ TOKEN* getToken()
 				nextCharacter = matchNextChar(filePtr);
 				return newToken;
 			}
+			else 
+			{
+				nextCharacter = matchNextChar(filePtr);
+				return newToken;
+			}
 		}
 		else if (nextCharacter == '/n')
 		{
@@ -110,6 +117,7 @@ TOKEN* getToken()
 		{
 			newToken->lexeme[index] = nextCharacter;
 			index++;
+			newToken->type = ID;
 			nextCharacter = matchNextChar(filePtr);
 		}
 		//special character

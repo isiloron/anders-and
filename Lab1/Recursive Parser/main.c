@@ -12,15 +12,62 @@ int main()
 		perror("Unable to open file: 'code2BCompiled.txt' \n");
 		exit(EXIT_FAILURE);
 	}
-
-	TOKEN* newToken = malloc(sizeof(TOKEN));
-
-	if (newToken == NULL)
+	int i = 30;
+	while (i!=0)
 	{
-		perror("One simply not allocate memory for a new token! \n");
-		exit(EXIT_FAILURE);
+
+		TOKEN* newToken = malloc(sizeof(TOKEN));
+
+		if (newToken == NULL)
+		{
+			perror("One simply not allocate memory for a new token! \n");
+			exit(EXIT_FAILURE);
+		}
+
+		newToken = getToken();
+
+		switch (newToken->type)
+		{
+		case RETURN:
+			printf("<RETURN>\n");
+			break;
+		case IF:
+			printf("<IF>\n");
+			break;
+		case ELSE:
+			printf("<ELSE>\n");
+			break;
+		case WHILE:
+			printf("<WHILE>\n");
+			break;
+		case WRITE:
+			printf("<WRITE>\n");
+			break;
+		case READ:
+			printf("<READ>\n");
+			break;
+		case VOID:
+			printf("<VOID>\n");
+			break;
+		case INT:
+			printf("<INT>\n");
+			break;
+		case ID:
+			printf("<ID>\n");
+			break;
+		case NUM:
+			printf("<NUM>\n");
+			break;
+		default:
+			break;
+		}
+
+		free(newToken);
+		i--;
 	}
 
-	newToken = getToken();
+	fflush(stdin);
+	getchar();
+
 }
 
