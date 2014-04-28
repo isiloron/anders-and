@@ -1,7 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,14 +31,13 @@
 #define ID 24
 #define NUM 25
 
-#define BUFFERSIZE 30
-#define ATTRSIZE 30
+#define BUFFERSIZE 256
 
 typedef struct token
 {
     char *lexeme;
     unsigned __int8 type;
-    char *attribute;
+    unsigned __int32 attribute;
 } TOKEN;
 
 #endif
