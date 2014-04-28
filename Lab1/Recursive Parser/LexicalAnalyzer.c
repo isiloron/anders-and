@@ -1,10 +1,11 @@
 #include "lexicalAnalyzer.h"
 
-void lookAhead()
+char lookAhead()
 {
-	TOKEN* newToken = createToken();
+	char nextCharacter;
 	FILE* filePtr = openFile();
-	peekOnNextChar(filePtr);
+	nextCharacter = peekOnNextChar(filePtr);
+	return nextCharacter;
 }
 TOKEN* createToken()
 {

@@ -4,7 +4,7 @@
 #include "main.h"
 
 
-void lookAhead();
+char lookAhead();
 TOKEN* createToken();
 FILE* openFile();
 char peekOnNextChar(FILE* filePtr);
