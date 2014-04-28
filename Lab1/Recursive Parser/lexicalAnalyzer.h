@@ -3,11 +3,11 @@
 
 #include "main.h"
 
-
-char lookAhead(FILE* filePtr);
-char match(FILE* filePtr);
-char peekOnNextChar(FILE* filePtr);
-TOKEN* get_Token(FILE* filePtr);
+char matchNextChar();
+char peekOnNextChar();
+TOKEN* createEmptyToken();
+TOKEN* getToken();
+TOKEN* specialCharacter(char nextCharacter, TOKEN* newToken);
 
 #endif
 

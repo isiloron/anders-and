@@ -1,18 +1,26 @@
 #include "lexicalAnalyzer.h"
 #include "main.h"
 
-/*
-	http://www.cpptutor.com/imgs/ascii_table.gif
-*/
+/*	http://www.cpptutor.com/imgs/ascii_table.gif is used to identify characters from the ASCII table */
 
 int main()
 {
-	FILE* filePtr = fopen("code2BCompiled.txt", "r");
+	filePtr = fopen("code2BCompiled.txt", "r");
 
 	if (filePtr == NULL)
 	{
-		printf("Unable to open file: 'code2BCompiled.txt' \n");
-		return NULL;
+		perror("Unable to open file: 'code2BCompiled.txt' \n");
+		exit(EXIT_FAILURE);
 	}
 
+	TOKEN* newToken = malloc(sizeof(TOKEN));
+
+	if (newToken == NULL)
+	{
+		perror("One simply not allocate memory for a new token! \n");
+		exit(EXIT_FAILURE);
+	}
+
+	newToken = getToken();
 }
+

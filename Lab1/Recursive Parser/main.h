@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+//Fileptr for reading characters
+FILE* filePtr;
 
 //Token types
 #define RETURN 1
