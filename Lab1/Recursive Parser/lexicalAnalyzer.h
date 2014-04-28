@@ -7,6 +7,7 @@
 char lookAhead(FILE* filePtr);
 char match(FILE* filePtr);
 char peekOnNextChar(FILE* filePtr);
+TOKEN* get_Token(FILE* filePtr);
 
 #endif
 

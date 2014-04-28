@@ -1,6 +1,9 @@
 #include "lexicalAnalyzer.h"
 #include "main.h"
 
+/*
+	http://www.cpptutor.com/imgs/ascii_table.gif
+*/
 
 int main()
 {
@@ -12,17 +15,4 @@ int main()
 		return NULL;
 	}
 
-	char nextCharacter;
-
-	while (1)
-	{
-		nextCharacter = match(filePtr);
-		switch (nextCharacter)
-		{
-
-			default:
-				printf("%c", nextCharacter);
-				break;
-		}
-	}
 }
