@@ -1,6 +1,6 @@
 #include "lexicalAnalyzer.h"
 
-void readToken()
+void lookAhead()
 {
 	TOKEN* newToken = createToken();
 	FILE* filePtr = openFile();

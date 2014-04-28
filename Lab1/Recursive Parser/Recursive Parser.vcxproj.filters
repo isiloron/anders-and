@@ -52,26 +52,5 @@
     <ClCompile Include="main.c">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="void_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="ReadOrReturn_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="specialSign_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="IfOrInt_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="else_tokenState.cpp">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="WhileOrWrite_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="break_tokenState.c">
-      <Filter>Source Files\Lexical Analyzer</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
