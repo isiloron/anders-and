@@ -8,7 +8,7 @@ char peekOnNextChar();
 TOKEN* createEmptyToken();
 void deleteToken(TOKEN* token);
 TOKEN* getNextToken();
-TOKEN* specialCharacter(TOKEN* newToken);
+void specialCharacter(TOKEN* newToken);
 void getNumberToken(TOKEN* newToken);
 void getLexeme(char* string);
 int lexemeIsKeyword(TOKEN* newToken);

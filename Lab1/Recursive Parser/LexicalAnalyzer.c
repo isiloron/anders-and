@@ -54,8 +54,8 @@ TOKEN* getNextToken()
 			newToken->type = 0;
 			return newToken;
 		}
-		//ignore
         nextCharacter = peekOnNextChar();
+        //whitespace
 		if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
 		{
             if (nextCharacter == '\n')
@@ -70,7 +70,7 @@ TOKEN* getNextToken()
                 return newToken;
             else
             {
-                perror("Expected number on line %d!",lineNumber);
+                perror(printf("Expected number on line %d!",lineNumber));
                 exit(EXIT_FAILURE);
             }
 		}
@@ -127,7 +127,7 @@ void getNumberToken(TOKEN* newToken)
     return;
 }
 
-TOKEN* specialCharacter(TOKEN* newToken)
+void specialCharacter(TOKEN* newToken)
 {
     newToken->lexeme[0] = consumeNextChar();
     newToken->lexeme[1] = '\0';
@@ -276,4 +276,9 @@ int lexemeIsKeyword(TOKEN* newToken)
 	}
 	else
 		return 0;
+}
+
+int lexemeIsID(TOKEN* newToken)
+{
+    return 0;
 }
