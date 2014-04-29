@@ -1,6 +1,6 @@
 #include "lexicalAnalyzer.h"
 
-char matchNextChar()
+char consumeNextChar()
 {
 	int nextChar = fgetc(filePtr);
 	return (char)nextChar;
@@ -31,7 +31,7 @@ TOKEN* createEmptyToken()
 	}
 }
 
-TOKEN* getToken()
+TOKEN* getNextToken()
 {
 	TOKEN* newToken = createEmptyToken();		
 	char nextCharacter;
@@ -39,7 +39,7 @@ TOKEN* getToken()
 
 	while (1)
 	{
-		nextCharacter = peekOnNextChar(filePtr);
+		nextCharacter = peekOnNextChar();
 
 		if (feof(filePtr))
 		{
@@ -48,8 +48,11 @@ TOKEN* getToken()
 			newToken->type = 0;
 			return newToken;
 		}
-		else if ( (nextCharacter == '/t') || (nextCharacter == ' ') || (nextCharacter == '/n') )
+		else if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
 		{
+            consumeNextChar();
+
+            /*
 			newToken->lexeme[index] = '\0';
 
 			//if we did'nt read a token earlier, consume character, and continue reading 
@@ -59,7 +62,7 @@ TOKEN* getToken()
 			}
 			else if (newToken->type == NUM)
 			{
-				newToken->attribute = (int)(newToken->lexeme);
+				newToken->attribute = atoi(newToken->lexeme);
 				nextCharacter = matchNextChar(filePtr);
 				return newToken;
 			}
@@ -110,35 +113,61 @@ TOKEN* getToken()
 				nextCharacter = matchNextChar(filePtr);
 				return newToken;
 			}
+            */
 		}
 		//number
 		else if (nextCharacter > 47 && nextCharacter < 58)
 		{
+            getNumberToken(newToken);
+            return newToken;
+            /*
 			newToken->lexeme[index] = nextCharacter;
 			index++;
 			newToken->type = NUM;
 			nextCharacter = matchNextChar(filePtr);
+            */
 		}
 		//character, a capitalized character or underscore
 		else if ((nextCharacter > 64 && nextCharacter < 91) || (nextCharacter > 96 && nextCharacter < 123) || (nextCharacter == 95))
 		{
+            getLexeme(newToken->lexeme);
+            if (lexemeIsKeyword(newToken))
+            {
+                return newToken;
+            }
+            else if (lexemeIsID(newToken))
+            {
+                return newToken;
+            }
+            else
+            {
+                //something is very wrong
+                free(newToken);
+                return NULL;
+            }
+
+            /*
 			newToken->lexeme[index] = nextCharacter;
 			index++;
 			newToken->type = ID;
 			nextCharacter = matchNextChar(filePtr);
+            */
 		}
 		//special character
 		else
 		{
-			newToken = specialCharacter(nextCharacter, newToken);
+			specialCharacter(newToken);
 			return newToken;
 		}
 	}
 }
 
-TOKEN* specialCharacter(char nextCharacter, TOKEN* newToken)
+TOKEN* specialCharacter(TOKEN* newToken)
 {
-	switch (nextCharacter)
+    newToken->lexeme[0] = consumeNextChar();
+    newToken->lexeme[1] = '\0';
+
+	switch (newToken->lexeme[0])
 	{
 		case '!':
 			newToken->type = NOTOP;
@@ -168,16 +197,28 @@ TOKEN* specialCharacter(char nextCharacter, TOKEN* newToken)
 			newToken->type = SEMICOLON;
 			break;
 		case '<':
-			if (peekOnNextChar(filePtr) == 61)
-				newToken->type = LOEOP;
-			else
-				newToken->type = LTOP;
+            if (peekOnNextChar() == 61) // =
+            {
+                newToken->lexeme[1] = consumeNextChar();
+                newToken->lexeme[2] = '\0';
+                newToken->type = LOEOP;
+            }
+            else
+            {
+                newToken->type = LTOP;
+            }
 			break;
 		case '=':
-			if (peekOnNextChar(filePtr) == 61)
-				newToken->type = EQOP;
-			else
-				newToken->type = ASSIGNOP;
+            if (peekOnNextChar() == 61) // =
+            {
+                newToken->lexeme[1] = consumeNextChar();
+                newToken->lexeme[2] = '\0';
+                newToken->type = EQOP;
+            }
+            else
+            {
+                newToken->type = ASSIGNOP;
+            }
 			break;
 		case '{':
 			newToken->type = LBRACE;
@@ -186,9 +227,9 @@ TOKEN* specialCharacter(char nextCharacter, TOKEN* newToken)
 			newToken->type = RBRACE;
 			break;
 		default:
-			perror("Error! %c is not included in the language. \n");
+			perror("Error! %c is not included in the language. \n",peekOnNextChar());
 			exit(EXIT_FAILURE);
 			break;
 	}
-	return newToken;
+	return;
 }

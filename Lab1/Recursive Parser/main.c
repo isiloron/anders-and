@@ -24,7 +24,7 @@ int main()
 			exit(EXIT_FAILURE);
 		}
 
-		newToken = getToken();
+		newToken = getNextToken();
 
 		//print lexeme of token
 		int index = 0;

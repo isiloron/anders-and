@@ -3,11 +3,17 @@
 
 #include "main.h"
 
-char matchNextChar();
+char consumeNextChar();
 char peekOnNextChar();
 TOKEN* createEmptyToken();
-TOKEN* getToken();
-TOKEN* specialCharacter(char nextCharacter, TOKEN* newToken);
+TOKEN* getNextToken();
+TOKEN* specialCharacter(TOKEN* newToken);
+void getNumberToken(TOKEN* newToken);
+void getLexeme(char* string);
+int lexemeIsKeyword(TOKEN* newToken);
+int lexemeIsID(TOKEN* newToken);
+
+
 
 #endif
 
