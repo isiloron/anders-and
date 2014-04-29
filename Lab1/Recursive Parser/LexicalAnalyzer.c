@@ -185,3 +185,57 @@ void getLexeme(char* string)
 		}
 	}	
 }
+
+int lexemeIsKeyword(TOKEN* newToken)
+{
+	if (strcmp(newToken->lexeme, "return") == 0)
+	{
+		newToken->attribute = 0;
+		newToken->type = RETURN;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "if") == 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = IF;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "else ") == 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = ELSE;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "while") == 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = WHILE;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "write")== 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = WRITE;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "read") == 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = READ;
+		return 1;
+	}
+	else if ( strcmp(newToken->lexeme, "void") == 0 )
+	{
+		newToken->attribute = 0;
+		newToken->type = VOID;
+		return 1;
+	}
+	else if (strcmp(newToken->lexeme, "int") == 0)
+	{
+		newToken->attribute = 0;
+		newToken->type = INT;
+		return 1;
+	}
+	else
+		return 0;
+}
