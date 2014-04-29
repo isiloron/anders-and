@@ -12,8 +12,8 @@ int main()
 		perror("Unable to open file: 'code2BCompiled.txt' \n");
 		exit(EXIT_FAILURE);
 	}
-	int i = 30;
-	while (i!=0)
+
+	while ( !feof(filePtr) )
 	{
 
 		TOKEN* newToken = malloc(sizeof(TOKEN));
@@ -26,44 +26,102 @@ int main()
 
 		newToken = getToken();
 
+		//print lexeme of token
+		int index = 0;
+		for (index = 0; newToken->lexeme[index] != '\0'; index++)
+		{
+			printf("%c", newToken->lexeme[index]);
+		}
+		printf(",");
+
+		//print type of token
 		switch (newToken->type)
 		{
 		case RETURN:
-			printf("<RETURN>\n");
+			printf("<RETURN>");
 			break;
 		case IF:
-			printf("<IF>\n");
+			printf("<IF>");
 			break;
 		case ELSE:
-			printf("<ELSE>\n");
+			printf("<ELSE>");
 			break;
 		case WHILE:
-			printf("<WHILE>\n");
+			printf("<WHILE>");
 			break;
 		case WRITE:
-			printf("<WRITE>\n");
+			printf("<WRITE>");
 			break;
 		case READ:
-			printf("<READ>\n");
+			printf("<READ>");
 			break;
 		case VOID:
-			printf("<VOID>\n");
+			printf("<VOID>");
 			break;
 		case INT:
-			printf("<INT>\n");
+			printf("<INT>");
 			break;
 		case ID:
-			printf("<ID>\n");
+			printf("<ID>");
 			break;
 		case NUM:
-			printf("<NUM>\n");
+			printf("<NUM>");
+			break;
+		case LBRACE:
+			printf("<LBRACE>");
+			break;
+		case RBRACE:
+			printf("<RBRACE>");
+			break;
+		case LPARANTHESIS:
+			printf("<LPARANTHESIS>");
+			break;
+		case RPARANTHESIS:
+			printf("<RPARANTHESIS>");
+			break;
+		case SEMICOLON:
+			printf("<SEMICOLON>");
+			break;
+		case COMMA:
+			printf("<COMMA>");
+			break;
+		case ASSIGNOP:
+			printf("<ASSIGNOP>");
+			break;
+		case PLUSOP:
+			printf("<PLUSOP>");
+			break;
+		case MINUSOP:
+			printf("<MINUSOP>");
+			break;
+		case MULTOP:
+			printf("<MULTOP>");
+			break;
+		case DIVOP:
+			printf("<DIVOP>");
+			break;
+		case NOTOP:
+			printf("<NOTOP>");
+			break;
+		case EQOP:
+			printf("<EQOP>");
+			break;
+		case LTOP:
+			printf("<LTOP>");
+			break;
+		case LOEOP:
+			printf("<LOEOP>");
 			break;
 		default:
 			break;
 		}
-
+		
+		printf(",");
+		//print attribute of token
+		printf("%d \n", newToken->attribute);
+		
 		free(newToken);
-		i--;
+
 	}
 
 	fflush(stdin);

@@ -42,8 +42,13 @@ TOKEN* getToken()
 		nextCharacter = peekOnNextChar(filePtr);
 
 		if (feof(filePtr))
+		{
+			newToken->lexeme[0] = '\0';
+			newToken->attribute = 0;
+			newToken->type = 0;
 			return newToken;
-		else if ((nextCharacter == '/t') || (nextCharacter == ' ') )
+		}
+		else if ( (nextCharacter == '/t') || (nextCharacter == ' ') || (nextCharacter == '/n') )
 		{
 			newToken->lexeme[index] = '\0';
 
@@ -51,6 +56,12 @@ TOKEN* getToken()
 			if (newToken->type == 0)
 			{
 				nextCharacter = matchNextChar(filePtr);
+			}
+			else if (newToken->type == NUM)
+			{
+				newToken->attribute = (int)(newToken->lexeme);
+				nextCharacter = matchNextChar(filePtr);
+				return newToken;
 			}
 			else if (strcmp("return", newToken->lexeme) == 0)
 			{
@@ -99,10 +110,6 @@ TOKEN* getToken()
 				nextCharacter = matchNextChar(filePtr);
 				return newToken;
 			}
-		}
-		else if (nextCharacter == '/n')
-		{
-
 		}
 		//number
 		else if (nextCharacter > 47 && nextCharacter < 58)
