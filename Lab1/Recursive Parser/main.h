@@ -37,7 +37,7 @@ typedef struct token
 {
     char *lexeme;
     unsigned __int8 type;
-    unsigned __int32 attribute;
+    __int32 attribute;
 } TOKEN;
 
 #endif
