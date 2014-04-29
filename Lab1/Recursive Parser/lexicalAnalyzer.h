@@ -6,6 +6,7 @@
 char consumeNextChar();
 char peekOnNextChar();
 TOKEN* createEmptyToken();
+void deleteToken(TOKEN* token);
 TOKEN* getNextToken();
 TOKEN* specialCharacter(TOKEN* newToken);
 void getNumberToken(TOKEN* newToken);

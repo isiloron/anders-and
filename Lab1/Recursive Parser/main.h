@@ -8,6 +8,9 @@
 //Fileptr for reading characters
 FILE* filePtr;
 
+//Current line
+int lineNumber;
+
 //Token types
 #define RETURN 1
 #define IF 2
@@ -41,7 +44,7 @@ typedef struct token
 {
     char *lexeme;
     unsigned __int8 type;
-    __int32 attribute;
+    unsigned __int32 attribute;
 } TOKEN;
 
 #endif

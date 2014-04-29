@@ -31,6 +31,13 @@ TOKEN* createEmptyToken()
 	}
 }
 
+void deleteToken(TOKEN* token)
+{
+    free(token->lexeme);
+    free(token);
+    return;
+}
+
 TOKEN* getNextToken()
 {
 	TOKEN* newToken = createEmptyToken();		
@@ -39,8 +46,6 @@ TOKEN* getNextToken()
 
 	while (1)
 	{
-		nextCharacter = peekOnNextChar();
-
 		if (feof(filePtr))
 		{
 			newToken->lexeme[0] = '\0';
@@ -48,87 +53,28 @@ TOKEN* getNextToken()
 			newToken->type = 0;
 			return newToken;
 		}
-		else if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
+
+        nextCharacter = peekOnNextChar();
+		if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
 		{
+            if (nextCharacter == '\n')
+                lineNumber++;
             consumeNextChar();
-
-            /*
-			newToken->lexeme[index] = '\0';
-
-			//if we did'nt read a token earlier, consume character, and continue reading 
-			if (newToken->type == 0)
-			{
-				nextCharacter = matchNextChar(filePtr);
-			}
-			else if (newToken->type == NUM)
-			{
-				newToken->attribute = atoi(newToken->lexeme);
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("return", newToken->lexeme) == 0)
-			{
-				newToken->type = RETURN;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("if", newToken->lexeme) == 0)
-			{
-				newToken->type = IF;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("else", newToken->lexeme) == 0)
-			{
-				newToken->type = ELSE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("while", newToken->lexeme) == 0)
-			{
-				newToken->type = WHILE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("write", newToken->lexeme) == 0)
-			{
-				newToken->type = WRITE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("void", newToken->lexeme) == 0)
-			{
-				newToken->type = VOID;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("int", newToken->lexeme) == 0)
-			{
-				newToken->type = INT;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else 
-			{
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-            */
 		}
 		//number
-		else if (nextCharacter > 47 && nextCharacter < 58)
+		else if (nextCharacter > '0' && nextCharacter < '9')
 		{
             getNumberToken(newToken);
-            return newToken;
-            /*
-			newToken->lexeme[index] = nextCharacter;
-			index++;
-			newToken->type = NUM;
-			nextCharacter = matchNextChar(filePtr);
-            */
+            if(newToken != NULL)
+                return newToken;
+            else
+            {
+                perror("Expected number on line %d!",lineNumber);
+                exit(EXIT_FAILURE);
+            }
 		}
 		//character, a capitalized character or underscore
-		else if ((nextCharacter > 64 && nextCharacter < 91) || (nextCharacter > 96 && nextCharacter < 123) || (nextCharacter == 95))
+		else if ((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z') || (nextCharacter == '_'))
 		{
             getLexeme(newToken->lexeme);
             if (lexemeIsKeyword(newToken))
@@ -142,7 +88,7 @@ TOKEN* getNextToken()
             else
             {
                 //something is very wrong
-                free(newToken);
+                deleteToken(newToken);
                 return NULL;
             }
 
@@ -160,6 +106,30 @@ TOKEN* getNextToken()
 			return newToken;
 		}
 	}
+}
+
+void getNumberToken(TOKEN* newToken)
+{
+    int index = 0;
+    char nextChar = peekOnNextChar();
+    while (nextChar > '0' && nextChar < '9')
+    {
+        newToken->lexeme[index] = consumeNextChar();
+        nextChar = peekOnNextChar();
+        index++;
+    }
+    
+    if ((nextChar > 'A' && nextChar < 'Z') || (nextChar > 'a' && nextChar < 'z') || (nextChar == '_'))
+    {
+        deleteToken(newToken);
+    }
+    else
+    {
+        newToken->lexeme[index] = '\n';
+        newToken->type = NUM;
+        newToken->attribute = atoi(newToken->lexeme);
+    }
+    return;
 }
 
 TOKEN* specialCharacter(TOKEN* newToken)
@@ -197,7 +167,7 @@ TOKEN* specialCharacter(TOKEN* newToken)
 			newToken->type = SEMICOLON;
 			break;
 		case '<':
-            if (peekOnNextChar() == 61) // =
+            if (peekOnNextChar() == '=')
             {
                 newToken->lexeme[1] = consumeNextChar();
                 newToken->lexeme[2] = '\0';
@@ -209,7 +179,7 @@ TOKEN* specialCharacter(TOKEN* newToken)
             }
 			break;
 		case '=':
-            if (peekOnNextChar() == 61) // =
+            if (peekOnNextChar() == '=')
             {
                 newToken->lexeme[1] = consumeNextChar();
                 newToken->lexeme[2] = '\0';

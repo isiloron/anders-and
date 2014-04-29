@@ -6,6 +6,7 @@
 int main()
 {
 	filePtr = fopen("code2BCompiled.txt", "r");
+    lineNumber = 0;
 
 	if (filePtr == NULL)
 	{
