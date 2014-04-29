@@ -41,6 +41,7 @@ TOKEN* getNextToken()
 	{
 		nextCharacter = peekOnNextChar();
 
+		//end of file
 		if (feof(filePtr))
 		{
 			newToken->lexeme[0] = '\0';
@@ -48,89 +49,22 @@ TOKEN* getNextToken()
 			newToken->type = 0;
 			return newToken;
 		}
+		//ignore
 		else if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
 		{
             consumeNextChar();
-
-            /*
-			newToken->lexeme[index] = '\0';
-
-			//if we did'nt read a token earlier, consume character, and continue reading 
-			if (newToken->type == 0)
-			{
-				nextCharacter = matchNextChar(filePtr);
-			}
-			else if (newToken->type == NUM)
-			{
-				newToken->attribute = atoi(newToken->lexeme);
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("return", newToken->lexeme) == 0)
-			{
-				newToken->type = RETURN;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("if", newToken->lexeme) == 0)
-			{
-				newToken->type = IF;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("else", newToken->lexeme) == 0)
-			{
-				newToken->type = ELSE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("while", newToken->lexeme) == 0)
-			{
-				newToken->type = WHILE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("write", newToken->lexeme) == 0)
-			{
-				newToken->type = WRITE;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("void", newToken->lexeme) == 0)
-			{
-				newToken->type = VOID;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else if (strcmp("int", newToken->lexeme) == 0)
-			{
-				newToken->type = INT;
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-			else 
-			{
-				nextCharacter = matchNextChar(filePtr);
-				return newToken;
-			}
-            */
 		}
 		//number
 		else if (nextCharacter > 47 && nextCharacter < 58)
 		{
             getNumberToken(newToken);
             return newToken;
-            /*
-			newToken->lexeme[index] = nextCharacter;
-			index++;
-			newToken->type = NUM;
-			nextCharacter = matchNextChar(filePtr);
-            */
 		}
 		//character, a capitalized character or underscore
 		else if ((nextCharacter > 64 && nextCharacter < 91) || (nextCharacter > 96 && nextCharacter < 123) || (nextCharacter == 95))
 		{
             getLexeme(newToken->lexeme);
+
             if (lexemeIsKeyword(newToken))
             {
                 return newToken;
@@ -145,13 +79,6 @@ TOKEN* getNextToken()
                 free(newToken);
                 return NULL;
             }
-
-            /*
-			newToken->lexeme[index] = nextCharacter;
-			index++;
-			newToken->type = ID;
-			nextCharacter = matchNextChar(filePtr);
-            */
 		}
 		//special character
 		else
@@ -232,4 +159,29 @@ TOKEN* specialCharacter(TOKEN* newToken)
 			break;
 	}
 	return;
+}
+
+void getLexeme(char* string)
+{
+	int index = 0;
+	char nextChar;
+
+	while (1)
+	{
+		nextChar = peekOnNextChar();
+
+		//if valid character read on
+		if ((nextChar > 47 && nextChar < 58) || (nextChar > 64 && nextChar < 91) || (nextChar > 96 && nextChar < 123) || (nextChar == 95))
+		{
+			string[index] = nextChar;
+			index++;
+			consumeNextChar();
+		}
+		//read a special character (end of token)
+		else
+		{
+			string[index] = '\0';
+			return;
+		}
+	}	
 }
