@@ -46,7 +46,12 @@ TOKEN* getNextToken()
 
 	while (1)
 	{
+<<<<<<< HEAD
+=======
+		nextCharacter = peekOnNextChar();
+
 		//end of file
+>>>>>>> 05945acd69d927a9961d25353e515d618a01d455
 		if (feof(filePtr))
 		{
 			newToken->lexeme[0] = '\0';
@@ -54,9 +59,14 @@ TOKEN* getNextToken()
 			newToken->type = 0;
 			return newToken;
 		}
-		//ignore
+<<<<<<< HEAD
+
         nextCharacter = peekOnNextChar();
 		if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
+=======
+		//ignore
+		else if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
+>>>>>>> 05945acd69d927a9961d25353e515d618a01d455
 		{
             if (nextCharacter == '\n')
                 lineNumber++;
@@ -66,6 +76,7 @@ TOKEN* getNextToken()
 		else if (nextCharacter > '0' && nextCharacter < '9')
 		{
             getNumberToken(newToken);
+<<<<<<< HEAD
             if(newToken != NULL)
                 return newToken;
             else
@@ -73,6 +84,9 @@ TOKEN* getNextToken()
                 perror("Expected number on line %d!",lineNumber);
                 exit(EXIT_FAILURE);
             }
+=======
+            return newToken;
+>>>>>>> 05945acd69d927a9961d25353e515d618a01d455
 		}
 		//character, a capitalized character or underscore
 		else if ((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z') || (nextCharacter == '_'))
