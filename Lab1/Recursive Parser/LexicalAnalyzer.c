@@ -209,7 +209,7 @@ void getLexeme(char* string)
 		nextChar = peekOnNextChar();
 
 		//if valid character read on
-		if ((nextChar > 47 && nextChar < 58) || (nextChar > 64 && nextChar < 91) || (nextChar > 96 && nextChar < 123) || (nextChar == 95))
+		if ((nextChar >= '0' && nextChar <= '9') || (nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
 		{
 			string[index] = nextChar;
 			index++;
