@@ -9,103 +9,66 @@ char consumeNextChar()
 char peekOnNextChar()
 {
 	int nextChar = fgetc(filePtr);
+    if (nextChar == EOF)
+        return EOF;
 	ungetc(nextChar, filePtr);
-	return (char)nextChar;
+	return nextChar;
 }
 
-TOKEN* createEmptyToken()
+TOKEN* getNextToken()
 {
-	TOKEN* emptyToken = malloc(sizeof(TOKEN));
-
-	if (emptyToken == NULL)
-	{
-		perror("Could not allocate memory for new token! \n");
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		emptyToken->attribute = 0;
-		emptyToken->lexeme = malloc(sizeof(BUFFERSIZE));
-		emptyToken->type = 0;
-		return emptyToken;
-	}
-}
-
-void deleteToken(TOKEN* token)
-{
-    free(token->lexeme);
-    free(token);
-    return;
-}
-
-TOKEN* getNextToken(TOKEN* tokenList)
-{
-	TOKEN* newToken = createEmptyToken();		
+	TOKEN* newToken;		
 	char nextCharacter;
 	int index = 0;
-
-	while (1)
-	{
-		//end of file
-		if (feof(filePtr))
-		{
-			newToken->lexeme[0] = '\0';
-			newToken->attribute = 0;
-			newToken->type = 0;
-			return newToken;
-		}
+    while (1)
+    {
         nextCharacter = peekOnNextChar();
+        //end of file
+        if (nextCharacter == EOF)
+        {
+            return NULL;
+        }
+        
         //whitespace
-		if ( (nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n') )
-		{
+        else if ((nextCharacter == '\t') || (nextCharacter == ' ') || (nextCharacter == '\n'))
+        {
             if (nextCharacter == '\n')
                 lineNumber++;
 
             consumeNextChar();
-		}
-		//number
-		else if (nextCharacter > '0' && nextCharacter < '9')
-		{
-            getNumberToken(newToken);
-            if(newToken != NULL)
+        }
+        //number
+        else if (nextCharacter > '0' && nextCharacter < '9')
+        {
+            newToken = getNumberToken();
+            if (newToken != NULL)
                 return newToken;
             else
             {
-                perror(printf("Expected number on line %d!",lineNumber));
-                exit(EXIT_FAILURE);
-            }
-		}
-		//character, a capitalized character or underscore
-		else if ((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z') || (nextCharacter == '_'))
-		{
-            getLexeme(newToken->lexeme);
-
-            if (lexemeIsKeyword(newToken))
-            {
-                return newToken;
-            }
-            else if (lexemeIsID(newToken))
-            {
-                return newToken;
-            }
-            else
-            {
-                //something is very wrong
-                deleteToken(newToken);
+                printf("Expected number on line %d!\n", lineNumber);
                 return NULL;
             }
-		}
-		//special character
-		else
-		{
-			specialCharacter(newToken);
-			return newToken;
-		}
-	}
+        }
+        //character, a capitalized character or underscore
+        else if ((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z') || (nextCharacter == '_'))
+        {
+            char* lexeme = getLexeme();
+
+            return checkLexeme(&tokenList, lexeme);
+
+        }
+        //special character
+        else
+        {
+            newToken = specialCharacter();
+            return newToken;
+        }
+    }
 }
 
-void getNumberToken(TOKEN* newToken)
+TOKEN* getNumberToken()
 {
+    TOKEN* newToken = createEmptyToken();
     int index = 0;
     char nextChar = peekOnNextChar();
 
@@ -118,19 +81,21 @@ void getNumberToken(TOKEN* newToken)
     
     if ((nextChar > 'A' && nextChar < 'Z') || (nextChar > 'a' && nextChar < 'z') || (nextChar == '_'))
     {
-        deleteToken(newToken);
+        deleteToken(&newToken);
+        return NULL;
     }
     else
     {
-        newToken->lexeme[index] = '\n';
+        newToken->lexeme[index] = '\0';
         newToken->type = NUM;
         newToken->attribute = atoi(newToken->lexeme);
+        return newToken;
     }
-    return;
 }
 
-void specialCharacter(TOKEN* newToken)
+TOKEN* specialCharacter()
 {
+    TOKEN* newToken = createEmptyToken();
     newToken->lexeme[0] = consumeNextChar();
     newToken->lexeme[1] = '\0';
 
@@ -194,17 +159,18 @@ void specialCharacter(TOKEN* newToken)
 			newToken->type = RBRACE;
 			break;
 		default:
-			perror("Error! %c is not included in the language. \n",peekOnNextChar());
-			exit(EXIT_FAILURE);
+            printf("Error! '%c'(%d) is not included in the language. Line: %d\n", newToken->lexeme[0], newToken->lexeme[0], lineNumber);
+            deleteToken(&newToken);
 			break;
 	}
-	return;
+	return newToken;
 }
 
-void getLexeme(char* string)
+char* getLexeme()
 {
 	int index = 0;
 	char nextChar;
+    char* string = malloc(BUFFERSIZE);
 
 	while (1)
 	{
@@ -221,82 +187,39 @@ void getLexeme(char* string)
 		else
 		{
 			string[index] = '\0';
-			return;
+			return string;
 		}
 	}	
 }
 
-int lexemeIsKeyword(TOKENLIST* tokenList, TOKEN* newToken)
+TOKEN* checkLexeme(TOKENNODE** node, char* lexeme)
 {
-	if (strcmp(newToken->lexeme, "return") == 0)
-	{
-		newToken->attribute = 0;
-		newToken->type = RETURN;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "if") == 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = IF;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "else ") == 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = ELSE;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "while") == 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = WHILE;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "write")== 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = WRITE;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "read") == 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = READ;
-		return 1;
-	}
-	else if ( strcmp(newToken->lexeme, "void") == 0 )
-	{
-		newToken->attribute = 0;
-		newToken->type = VOID;
-		return 1;
-	}
-	else if (strcmp(newToken->lexeme, "int") == 0)
-	{
-		newToken->attribute = 0;
-		newToken->type = INT;
-		return 1;
-	}
-	else
-		return 0;
-}
-
-int lexemeIsID(TOKEN* newToken)
-{
-    return 0;
-}
-
-TOKENLIST* createList()
-{
-	TOKENLIST* ptrToList = (TOKENLIST*)malloc(sizeof(TOKENLIST));
-	if (ptrToList == NULL)
-	{
-		perror("Failed to create a list of tokens");
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		ptrToList->currToken = NULL;
-		ptrToList->nextToken = NULL;
-		return ptrToList;
-	}
+    if (*node == NULL)
+    {
+        printf("Error! Something is wrong with the token list!");
+        return NULL;
+    }
+    else if (strcmp((*node)->token->lexeme, lexeme) == 0)
+    {
+        return tokenCopy((*node)->token);
+    }
+    else if ((*node)->next == NULL)
+    {
+        if ((*node)->token->type == ID)
+        {
+            TOKEN* newToken = createToken(lexeme, ID, (*node)->token->attribute + 1);
+            appendTokenToList(&tokenList, newToken);
+            return tokenCopy(newToken);
+        }
+        else
+        {
+            TOKEN* newToken = createToken(lexeme, ID, 1);
+            appendTokenToList(&tokenList, newToken);
+            return tokenCopy(newToken);
+        }
+    }
+    else
+    {
+        return checkLexeme(&((*node)->next), lexeme);
+    }
 }

@@ -68,12 +68,16 @@
     <Text Include="code2BCompiled.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="globalvars.h" />
     <ClInclude Include="lexicalAnalyzer.h" />
+    <ClInclude Include="libraries.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="tokens.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LexicalAnalyzer.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="tokens.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

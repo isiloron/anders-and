@@ -44,6 +44,15 @@
     <ClInclude Include="main.h">
       <Filter>Header Files\Main Headers</Filter>
     </ClInclude>
+    <ClInclude Include="tokens.h">
+      <Filter>Header Files\Lexical Analyzer Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries.h">
+      <Filter>Header Files\Main Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="globalvars.h">
+      <Filter>Header Files\Main Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LexicalAnalyzer.c">
@@ -51,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="tokens.c">
+      <Filter>Source Files\Lexical Analyzer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

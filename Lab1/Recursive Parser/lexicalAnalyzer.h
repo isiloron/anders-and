@@ -1,24 +1,18 @@
 #ifndef LEXICALANALYZER_H
 #define LEXICALANALYZER_H
 
-#include "main.h"
+#include "libraries.h"
+#include "tokens.h"
+#include "globalvars.h"
 
-typedef struct token_list
-{
-	TOKEN* currToken;
-	TOKEN* nextToken;
-}TOKENLIST;
 
 char consumeNextChar();
 char peekOnNextChar();
-TOKEN* createEmptyToken();
-void deleteToken(TOKEN* token);
-TOKEN* getNextToken(TOKENLIST* tokenList);
-void specialCharacter(TOKEN* newToken);
-void getNumberToken(TOKEN* newToken);
-void getLexeme(char* string);
-int lexemeIsKeyword(TOKEN* newToken);
-int lexemeIsID(TOKEN* newToken);
+TOKEN* getNextToken();
+TOKEN* specialCharacter();
+TOKEN* getNumberToken();
+char* getLexeme();
+TOKEN* checkLexeme(TOKENNODE** node, char* lexeme);
 
 
 
