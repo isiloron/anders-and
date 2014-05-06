@@ -5,6 +5,8 @@
 
 int main()
 {
+	TOKENLIST* tokenList = createList();
+
 	filePtr = fopen("code2BCompiled.txt", "r");
     lineNumber = 0;
 
@@ -25,7 +27,7 @@ int main()
 			exit(EXIT_FAILURE);
 		}
 
-		newToken = getNextToken();
+		newToken = getNextToken(tokenList);
 
 		//print lexeme of token
 		int index = 0;
