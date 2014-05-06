@@ -38,7 +38,7 @@ void deleteToken(TOKEN* token)
     return;
 }
 
-TOKEN* getNextToken()
+TOKEN* getNextToken(TOKEN* tokenList)
 {
 	TOKEN* newToken = createEmptyToken();		
 	char nextCharacter;
@@ -60,6 +60,7 @@ TOKEN* getNextToken()
 		{
             if (nextCharacter == '\n')
                 lineNumber++;
+
             consumeNextChar();
 		}
 		//number
@@ -107,6 +108,7 @@ void getNumberToken(TOKEN* newToken)
 {
     int index = 0;
     char nextChar = peekOnNextChar();
+
     while (nextChar > '0' && nextChar < '9')
     {
         newToken->lexeme[index] = consumeNextChar();
@@ -224,7 +226,7 @@ void getLexeme(char* string)
 	}	
 }
 
-int lexemeIsKeyword(TOKEN* newToken)
+int lexemeIsKeyword(TOKENLIST* tokenList, TOKEN* newToken)
 {
 	if (strcmp(newToken->lexeme, "return") == 0)
 	{
@@ -281,4 +283,20 @@ int lexemeIsKeyword(TOKEN* newToken)
 int lexemeIsID(TOKEN* newToken)
 {
     return 0;
+}
+
+TOKENLIST* createList()
+{
+	TOKENLIST* ptrToList = (TOKENLIST*)malloc(sizeof(TOKENLIST));
+	if (ptrToList == NULL)
+	{
+		perror("Failed to create a list of tokens");
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		ptrToList->currToken = NULL;
+		ptrToList->nextToken = NULL;
+		return ptrToList;
+	}
 }
