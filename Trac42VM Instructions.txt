@@ -1,0 +1,46 @@
+Trac42VM Instructions
+
+PUSHINT x
+Push the constant x
+
+DECL l
+Declare a variable named l and put it on the stack. 
+For function return values, the reserved name @ 
+can be used.
+
+RVALINT l
+Push the contents (the “r-value”) of variable l
+
+LVAL l
+Push the address (the “l-value”) to the variable l
+
+POP n
+Pop n elements 
+
+ASSINT 
+Pop a value x, pop a stack address a, and then store
+x to a 
+
+NOT
+Pop a value x, then push 1 if x == 0, otherwise 0
+
+ADD, SUB, MULT, DIV, EQINT, LTINT, LEINT
+Pop two operands, perform the operation (the right 
+operand is the first popped), and then push the 
+result. The boolean operators return 0 for false and 
+1 for true. 
+
+[l]
+Adds the code label l 
+
+BRA l
+Jump to the label l 
+
+BRF l
+Pop a value, and if 0 jump to the label l
+
+BSR l
+Jump to the subroutine labelled l 
+
+RTS
+Return from the current subroutine

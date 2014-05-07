@@ -1,8 +1,11 @@
 #ifndef GLOBALVARS_H
 #define GLOBALVARS_H
 
-//Fileptr for reading characters
-FILE* filePtr;
+//file pointer for reading characters
+FILE* filePtrSource;
+
+// file pointer for stack machine code
+FILE* filePtrDest;
 
 //Current line
 int lineNumber;

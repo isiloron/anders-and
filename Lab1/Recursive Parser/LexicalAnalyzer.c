@@ -80,16 +80,16 @@ TOKEN* getNextToken()
 
 char consumeNextChar()
 {
-    int nextChar = fgetc(filePtr);
+    int nextChar = fgetc(filePtrSource);
     return (char)nextChar;
 }
 
 char peekOnNextChar()
 {
-    int nextChar = fgetc(filePtr);
+    int nextChar = fgetc(filePtrSource);
     if (nextChar == EOF)
         return EOF;
-    ungetc(nextChar, filePtr);
+    ungetc(nextChar, filePtrSource);
     return nextChar;
 }
 
@@ -97,17 +97,17 @@ char peekOnNextNextChar()
 {
     char chars[2];
 
-    chars[0] = fgetc(filePtr);
+    chars[0] = fgetc(filePtrSource);
     if (chars[0] == EOF)
         return EOF;
-    chars[1] = fgetc(filePtr);
+    chars[1] = fgetc(filePtrSource);
     if (chars[1] == EOF)
     {
-        ungetc(chars[0], filePtr);
+        ungetc(chars[0], filePtrSource);
         return EOF;
     }
-    ungetc(chars[1], filePtr);
-    ungetc(chars[0], filePtr);
+    ungetc(chars[1], filePtrSource);
+    ungetc(chars[0], filePtrSource);
 
     return chars[1];
 }

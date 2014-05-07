@@ -6,15 +6,15 @@ int main()
 {
 	generateTokenList();
 
-	filePtr = fopen("code2BCompiled.txt", "r");
+	filePtrSource = fopen("code2BCompiled.txt", "r");
     lineNumber = 1;
 
-	if (filePtr == NULL)
+	if (filePtrSource == NULL)
 	{
 		printf("Unable to open file: 'code2BCompiled.txt' \n");
 	}
 
-    while (!feof(filePtr))
+    while (!feof(filePtrSource))
     {
 
         TOKEN* newToken;
