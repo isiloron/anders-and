@@ -53,6 +53,9 @@
     <ClInclude Include="globalvars.h">
       <Filter>Header Files\Main Headers</Filter>
     </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Header Files\Parser Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LexicalAnalyzer.c">
@@ -63,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="tokens.c">
       <Filter>Source Files\Lexical Analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.c">
+      <Filter>Source Files\Parser</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
