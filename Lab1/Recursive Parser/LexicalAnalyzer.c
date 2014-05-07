@@ -1,21 +1,5 @@
 #include "lexicalAnalyzer.h"
 
-char peekOnNextNextChar()
-{
-	int chars[2];
-
-	chars[0] = fgetc(filePtr);
-	if (chars[0] == EOF)
-		return EOF;
-	chars[1] = fgetc(filePtr);
-	if (chars[1] == EOF)
-		return EOF;
-	ungetc(chars[1], filePtr);
-	ungetc(chars[0], filePtr);
-
-	return chars[1];
-}
-
 TOKEN* getNextToken()
 {
 	TOKEN* newToken;		
@@ -107,6 +91,22 @@ char peekOnNextChar()
         return EOF;
     ungetc(nextChar, filePtr);
     return nextChar;
+}
+
+char peekOnNextNextChar()
+{
+    int chars[2];
+
+    chars[0] = fgetc(filePtr);
+    if (chars[0] == EOF)
+        return EOF;
+    chars[1] = fgetc(filePtr);
+    if (chars[1] == EOF)
+        return EOF;
+    ungetc(chars[1], filePtr);
+    ungetc(chars[0], filePtr);
+
+    return chars[1];
 }
 
 TOKEN* getNumberToken()

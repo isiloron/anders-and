@@ -8,6 +8,7 @@
 TOKEN* getNextToken();
 char consumeNextChar();
 char peekOnNextChar();
+char peekOnNextNextChar();
 TOKEN* getNumberToken();
 TOKEN* specialCharacter();
 char* getLexeme();
