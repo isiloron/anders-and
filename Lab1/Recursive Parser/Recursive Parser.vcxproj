@@ -72,11 +72,13 @@
     <ClInclude Include="lexicalAnalyzer.h" />
     <ClInclude Include="libraries.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="parser.h" />
     <ClInclude Include="tokens.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LexicalAnalyzer.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="parser.c" />
     <ClCompile Include="tokens.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
