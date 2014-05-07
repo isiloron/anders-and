@@ -85,11 +85,11 @@ void generateTokenList()
     appendTokenToList(&tokenList, token);
 }
 
-TOKENNODE* createTokenNode()
+TOKENNODE* createTokenNode(TOKEN* token, TOKENNODE* node)
 {
     TOKENNODE* newNode = (TOKENNODE*)malloc(sizeof(TOKENNODE));
-    newNode->token = NULL;
-    newNode->next = NULL;
+    newNode->token = token;
+    newNode->next = node;
     return newNode;
 }
 
@@ -97,9 +97,7 @@ void appendTokenToList(TOKENNODE** node, TOKEN* token)
 {
     if (*node == NULL)
     {
-        *node = createTokenNode();
-        (*node)->token = token;
-        (*node)->next = NULL;
+        *node = createTokenNode(token,NULL);
     }
     else
     {

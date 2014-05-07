@@ -50,7 +50,7 @@ TOKEN* getNextToken()
 			consumeNextChar();
 			consumeNextChar();
 
-			while (peekOnNextChar != '*' && peekOnNextNextChar() != '/')
+			while (peekOnNextChar() != '*' && peekOnNextNextChar() != '/')
 			{
 				consumeNextChar();
 			}
@@ -62,7 +62,7 @@ TOKEN* getNextToken()
 		//linecomment
 		else if (nextCharacter == '/' && peekOnNextChar() == '/')
 		{
-			while (peekOnNextChar != '\n')
+			while (peekOnNextChar() != '\n')
 			{
 				consumeNextChar();
 			}
@@ -95,14 +95,17 @@ char peekOnNextChar()
 
 char peekOnNextNextChar()
 {
-    int chars[2];
+    char chars[2];
 
     chars[0] = fgetc(filePtr);
     if (chars[0] == EOF)
         return EOF;
     chars[1] = fgetc(filePtr);
     if (chars[1] == EOF)
+    {
+        ungetc(chars[0], filePtr);
         return EOF;
+    }
     ungetc(chars[1], filePtr);
     ungetc(chars[0], filePtr);
 
@@ -121,7 +124,7 @@ TOKEN* getNumberToken()
         nextChar = peekOnNextChar();
         index++;
     }
-    
+
     if ((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
     {
         deleteToken(&newToken);
@@ -251,13 +254,15 @@ TOKEN* checkLexeme(TOKENNODE** node, char* lexeme)
         if ((*node)->token->type == ID)
         {
             TOKEN* newToken = createToken(lexeme, ID, (*node)->token->attribute + 1);
-            appendTokenToList(&tokenList, newToken);
+            TOKENNODE* newNode = createTokenNode(newToken, NULL);
+            (*node)->next = newNode;
             return tokenCopy(newToken);
         }
         else
         {
             TOKEN* newToken = createToken(lexeme, ID, 1);
-            appendTokenToList(&tokenList, newToken);
+            TOKENNODE* newNode = createTokenNode(newToken, NULL);
+            (*node)->next = newNode;
             return tokenCopy(newToken);
         }
     }

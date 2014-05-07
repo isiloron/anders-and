@@ -50,7 +50,7 @@ TOKEN* createEmptyToken();
 void deleteToken(TOKEN** token);
 TOKEN* tokenCopy(TOKEN* token);
 void generateTokenList();
-TOKENNODE* createTokenNode();
+TOKENNODE* createTokenNode(TOKEN* token, TOKENNODE* node);
 void appendTokenToList(TOKENNODE** node, TOKEN* token);
 
 #endif
