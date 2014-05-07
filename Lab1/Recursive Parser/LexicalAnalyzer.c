@@ -1,20 +1,5 @@
 #include "lexicalAnalyzer.h"
 
-char consumeNextChar()
-{
-	int nextChar = fgetc(filePtr);
-	return (char)nextChar;
-}
-
-char peekOnNextChar()
-{
-	int nextChar = fgetc(filePtr);
-    if (nextChar == EOF)
-        return EOF;
-	ungetc(nextChar, filePtr);
-	return nextChar;
-}
-
 TOKEN* getNextToken()
 {
 	TOKEN* newToken;		
@@ -38,7 +23,7 @@ TOKEN* getNextToken()
             consumeNextChar();
         }
         //number
-        else if (nextCharacter > '0' && nextCharacter < '9')
+        else if (nextCharacter >= '0' && nextCharacter <= '9')
         {
             newToken = getNumberToken();
             if (newToken != NULL)
@@ -50,7 +35,7 @@ TOKEN* getNextToken()
             }
         }
         //character, a capitalized character or underscore
-        else if ((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z') || (nextCharacter == '_'))
+        else if ((nextCharacter >= 'A' && nextCharacter <= 'Z') || (nextCharacter >= 'a' && nextCharacter <= 'z') || (nextCharacter == '_'))
         {
             char* lexeme = getLexeme();
 
@@ -66,20 +51,35 @@ TOKEN* getNextToken()
     }
 }
 
+char consumeNextChar()
+{
+    int nextChar = fgetc(filePtr);
+    return (char)nextChar;
+}
+
+char peekOnNextChar()
+{
+    int nextChar = fgetc(filePtr);
+    if (nextChar == EOF)
+        return EOF;
+    ungetc(nextChar, filePtr);
+    return nextChar;
+}
+
 TOKEN* getNumberToken()
 {
     TOKEN* newToken = createEmptyToken();
     int index = 0;
     char nextChar = peekOnNextChar();
 
-    while (nextChar > '0' && nextChar < '9')
+    while (nextChar >= '0' && nextChar <= '9')
     {
         newToken->lexeme[index] = consumeNextChar();
         nextChar = peekOnNextChar();
         index++;
     }
     
-    if ((nextChar > 'A' && nextChar < 'Z') || (nextChar > 'a' && nextChar < 'z') || (nextChar == '_'))
+    if ((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
     {
         deleteToken(&newToken);
         return NULL;
