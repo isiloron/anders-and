@@ -15,14 +15,32 @@ char peekOnNextChar()
 	return nextChar;
 }
 
+char peekOnNextNextChar()
+{
+	int chars[2];
+
+	chars[0] = fgetc(filePtr);
+	if (chars[0] == EOF)
+		return EOF;
+	chars[1] = fgetc(filePtr);
+	if (chars[1] == EOF)
+		return EOF;
+	ungetc(chars[1], filePtr);
+	ungetc(chars[0], filePtr);
+
+	return chars[1];
+}
+
 TOKEN* getNextToken()
 {
 	TOKEN* newToken;		
-	char nextCharacter;
+	char nextCharacter, next_next_character;
 	int index = 0;
     while (1)
     {
         nextCharacter = peekOnNextChar();
+		next_next_character = peekOnNextNextChar();
+
         //end of file
         if (nextCharacter == EOF)
         {
@@ -57,11 +75,36 @@ TOKEN* getNextToken()
             return checkLexeme(&tokenList, lexeme);
 
         }
+		//comment
+		else if (nextCharacter == '/' && peekOnNextNextChar() == '*')
+		{
+			consumeNextChar();
+			consumeNextChar();
+
+			while (peekOnNextChar != '*' && peekOnNextNextChar() != '/')
+			{
+				consumeNextChar();
+			}
+
+			consumeNextChar();
+			consumeNextChar();
+
+		}
+		//linecomment
+		else if (nextCharacter == '/' && peekOnNextChar() == '/')
+		{
+			while (peekOnNextChar != '\n')
+			{
+				consumeNextChar();
+			}
+			consumeNextChar();
+		}
         //special character
         else
-        {
-            newToken = specialCharacter();
-            return newToken;
+        {	
+				newToken = specialCharacter();
+				return newToken;
+			
         }
     }
 }
