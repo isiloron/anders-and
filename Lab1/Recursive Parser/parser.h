@@ -7,7 +7,7 @@
 #include "globalvars.h"
 
 //linus
-void START();
+int START();
 void START_();
 void FUNCDEF();
 void TYPE();
