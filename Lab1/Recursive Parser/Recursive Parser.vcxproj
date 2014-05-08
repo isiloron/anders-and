@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="globalvars.c" />
     <ClCompile Include="LexicalAnalyzer.c" />
+    <ClCompile Include="lexical_analyzer_test.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="parser.c" />
     <ClCompile Include="tokens.c" />

@@ -73,5 +73,8 @@
     <ClCompile Include="globalvars.c">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
+    <ClCompile Include="lexical_analyzer_test.c">
+      <Filter>Source Files\Lexical Analyzer</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
