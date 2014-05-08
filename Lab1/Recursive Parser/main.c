@@ -2,17 +2,13 @@
 
 /*	http://www.cpptutor.com/imgs/ascii_table.gif is used to identify characters from the ASCII table */
 
-int main()
+int main(int argc, char* argv[])
 {
-	generateTokenList();
-
-	filePtrSource = fopen("code2BCompiled.txt", "r");
-    lineNumber = 1;
-
-	if (filePtrSource == NULL)
-	{
-		printf("Unable to open file: 'code2BCompiled.txt' \n");
-	}
+    if (prepareGlobalVars(argv[0]))
+    {
+        printf("Failed to prepare global varaibles!\n");
+        return EXIT_FAILURE;
+    }
 
     while (!feof(filePtrSource))
     {

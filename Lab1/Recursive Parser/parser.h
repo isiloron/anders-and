@@ -1,7 +1,10 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "main.h"
+#include "libraries.h"
+#include "tokens.h"
+#include "lexicalAnalyzer.h"
+#include "globalvars.h"
 
 //linus
 void START();
@@ -14,7 +17,6 @@ void BLOCK();
 void BLOCK_();
 void STMT();
 void IDENT();
-void IDENT_();
 void ASSIGN();
 void FUNCCALL();
 

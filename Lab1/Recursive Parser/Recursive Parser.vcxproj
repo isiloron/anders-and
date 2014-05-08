@@ -76,6 +76,7 @@
     <ClInclude Include="tokens.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="globalvars.c" />
     <ClCompile Include="LexicalAnalyzer.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="parser.c" />

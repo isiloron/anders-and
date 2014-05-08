@@ -49,8 +49,10 @@ TOKEN* createToken(char* lexeme, int type, int attr);
 TOKEN* createEmptyToken();
 void deleteToken(TOKEN** token);
 TOKEN* tokenCopy(TOKEN* token);
-void generateTokenList();
+int generateTokenList();
 TOKENNODE* createTokenNode(TOKEN* token, TOKENNODE* node);
-void appendTokenToList(TOKENNODE** node, TOKEN* token);
+int appendTokenToList(TOKENNODE** node, TOKEN* token);
+
+#include "globalvars.h"
 
 #endif

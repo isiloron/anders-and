@@ -1,6 +1,9 @@
 #ifndef GLOBALVARS_H
 #define GLOBALVARS_H
 
+#include "libraries.h"
+#include "tokens.h"
+
 //file pointer for reading characters
 FILE* filePtrSource;
 
@@ -12,6 +15,11 @@ int lineNumber;
 
 //token list
 TOKENNODE* tokenList;
+
+//current token to be parsed
+TOKEN* currentToken;
+
+int prepareGlobalVars(char* fileName);
 
 #endif
 

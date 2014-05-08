@@ -1,10 +1,9 @@
 #include "lexicalAnalyzer.h"
 
 TOKEN* getNextToken()
-{
-	TOKEN* newToken;		
+{	
+    TOKEN* newToken;
 	char nextCharacter, next_next_character;
-	int index = 0;
     while (1)
     {
         nextCharacter = peekOnNextChar();
@@ -28,30 +27,51 @@ TOKEN* getNextToken()
         else if (nextCharacter >= '0' && nextCharacter <= '9')
         {
             newToken = getNumberToken();
-            if (newToken != NULL)
-                return newToken;
-            else
+            if (newToken == NULL)
             {
                 printf("Expected number on line %d!\n", lineNumber);
                 return NULL;
+            }
+            else
+            {
+                return newToken;
             }
         }
         //character, a capitalized character or underscore
         else if ((nextCharacter >= 'A' && nextCharacter <= 'Z') || (nextCharacter >= 'a' && nextCharacter <= 'z') || (nextCharacter == '_'))
         {
             char* lexeme = getLexeme();
-
-            return checkLexeme(&tokenList, lexeme);
+            if (lexeme == NULL)
+            {
+                printf("Failed to get lexeme for keword or ID! Line: %d\n",lineNumber);
+                return NULL;
+            }
+            newToken = checkLexeme(&tokenList, lexeme);
+            if (newToken == NULL)
+            {
+                printf("Failed to match lexeme with kewords or ID. Line: %d\n",lineNumber);
+                return NULL;
+            }
+            return newToken;
 
         }
 		//comment
-		else if (nextCharacter == '/' && peekOnNextNextChar() == '*')
+		else if (nextCharacter == '/' && next_next_character == '*')
 		{
 			consumeNextChar();
 			consumeNextChar();
 
 			while (peekOnNextChar() != '*' && peekOnNextNextChar() != '/')
 			{
+                if (peekOnNextChar() == EOF)
+                {
+                    printf("Comment end marker missing!\n",lineNumber);
+                    return NULL;
+                }
+                else if (peekOnNextChar() == '\n')
+                {
+                    lineNumber++;
+                }
 				consumeNextChar();
 			}
 
@@ -60,20 +80,19 @@ TOKEN* getNextToken()
 
 		}
 		//linecomment
-		else if (nextCharacter == '/' && peekOnNextChar() == '/')
+		else if (nextCharacter == '/' && next_next_character == '/')
 		{
 			while (peekOnNextChar() != '\n')
 			{
 				consumeNextChar();
 			}
 			consumeNextChar();
+            lineNumber++;
 		}
         //special character
         else
-        {	
-				newToken = specialCharacter();
-				return newToken;
-			
+        {
+            return specialCharacter();
         }
     }
 }
@@ -89,8 +108,11 @@ char peekOnNextChar()
     int nextChar = fgetc(filePtrSource);
     if (nextChar == EOF)
         return EOF;
-    ungetc(nextChar, filePtrSource);
-    return nextChar;
+    else
+    {
+        ungetc(nextChar, filePtrSource);
+        return nextChar;
+    }
 }
 
 char peekOnNextNextChar()
@@ -98,23 +120,34 @@ char peekOnNextNextChar()
     char chars[2];
 
     chars[0] = fgetc(filePtrSource);
+    
     if (chars[0] == EOF)
         return EOF;
-    chars[1] = fgetc(filePtrSource);
+    else
+        chars[1] = fgetc(filePtrSource);
+    
     if (chars[1] == EOF)
     {
         ungetc(chars[0], filePtrSource);
         return EOF;
     }
-    ungetc(chars[1], filePtrSource);
-    ungetc(chars[0], filePtrSource);
-
-    return chars[1];
+    else
+    {
+        ungetc(chars[1], filePtrSource);
+        ungetc(chars[0], filePtrSource);
+        return chars[1];
+    }
 }
 
 TOKEN* getNumberToken()
 {
     TOKEN* newToken = createEmptyToken();
+    if (newToken == NULL)
+    {
+        printf("Failed to create empty token!\n");
+        return NULL;
+    }
+
     int index = 0;
     char nextChar = peekOnNextChar();
 
@@ -125,23 +158,22 @@ TOKEN* getNumberToken()
         index++;
     }
 
-    if ((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
-    {
-        deleteToken(&newToken);
-        return NULL;
-    }
-    else
-    {
-        newToken->lexeme[index] = '\0';
-        newToken->type = NUM;
-        newToken->attribute = atoi(newToken->lexeme);
-        return newToken;
-    }
+    newToken->lexeme[index] = '\0';
+    newToken->type = NUM;
+    newToken->attribute = atoi(newToken->lexeme);
+    return newToken;
+
 }
 
 TOKEN* specialCharacter()
 {
     TOKEN* newToken = createEmptyToken();
+    if (newToken == NULL)
+    {
+        printf("Failed to create empty token!\n");
+        return NULL;
+    }
+
     newToken->lexeme[0] = consumeNextChar();
     newToken->lexeme[1] = '\0';
 
@@ -205,7 +237,7 @@ TOKEN* specialCharacter()
 			newToken->type = RBRACE;
 			break;
 		default:
-            printf("Error! '%c'(%d) is not included in the language. Line: %d\n", newToken->lexeme[0], newToken->lexeme[0], lineNumber);
+            printf("Error! The character '%c'(%d) is not included in the language. Line: %d\n", newToken->lexeme[0], newToken->lexeme[0], lineNumber);
             deleteToken(&newToken);
 			break;
 	}
@@ -218,31 +250,39 @@ char* getLexeme()
 	char nextChar;
     char* string = malloc(BUFFERSIZE);
 
-	while (1)
-	{
-		nextChar = peekOnNextChar();
+    if (string == NULL)
+    {
+        printf("Failed to allocate memory for string!\n");
+        return NULL;
+    }
 
-		//if valid character read on
-		if ((nextChar >= '0' && nextChar <= '9') || (nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
-		{
-			string[index] = nextChar;
-			index++;
-			consumeNextChar();
-		}
-		//read a special character (end of token)
-		else
-		{
-			string[index] = '\0';
-			return string;
-		}
-	}	
+    while (index < BUFFERSIZE)
+    {
+        nextChar = peekOnNextChar();
+
+        //if valid character read on
+        if ((nextChar >= '0' && nextChar <= '9') || (nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar == '_'))
+        {
+            string[index] = nextChar;
+            index++;
+            consumeNextChar();
+        }
+        //read a special character (end of token)
+        else
+        {
+            string[index] = '\0';
+            return string;
+        }
+    }
+    printf("Lexeme too long! Line: %d\n",lineNumber);
+    return NULL;
 }
 
 TOKEN* checkLexeme(TOKENNODE** node, char* lexeme)
 {
     if (*node == NULL)
     {
-        printf("Error! Something is wrong with the token list!");
+        printf("Error! Something is wrong with the token list!\n");
         return NULL;
     }
     else if (strcmp((*node)->token->lexeme, lexeme) == 0)
