@@ -10,7 +10,7 @@ int prepareGlobalVars(char* fileName)
     filePtrSource = fopen(fileName, "r");
     if (filePtrSource == NULL)
     {
-        printf("Unable to open file: 'code2BCompiled.txt' \n");
+        printf("Unable to open file: %s \n",fileName);
         return EXIT_FAILURE;
     }
     lineNumber = 1;
