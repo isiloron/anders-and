@@ -207,11 +207,12 @@ int BLOCK_()
 
 }
 
+
+
 int IFSTMT()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
-		printf("Parser error! Could not get next token. ");
 		return EXIT_FAILURE;
 	}
 	
@@ -221,29 +222,21 @@ int IFSTMT()
 		if (IFSTMT_() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 	}
-	else
-	{
-		return EXIT_SUCCESS;
-	}
 	return EXIT_SUCCESS;
 }
 
 int IFSTMT_()
 {
+	char* elseLBL, exitLBL;
+
 	if (getNextToken() == EXIT_FAILURE)
-	{
-		printf("Parser error! Could not get next token. ");
 		return EXIT_FAILURE;
-	}
 
 	if (nextToken->type == IF)
 	{
 		consumeNextToken();
 		if (getNextToken() == EXIT_FAILURE)
-		{
-			printf("Parser error! Could not get next token. ");
 			return EXIT_FAILURE;
-		}
 
 		if (nextToken->type == LPARANTHESIS)
 		{
@@ -256,23 +249,38 @@ int IFSTMT_()
 			printf("Parser error! Missing left paranthesis on line %d", lineNumber);
 			return EXIT_FAILURE;
 		}
-		
+
+		if (getNextToken() == EXIT_FAILURE)
+			return EXIT_FAILURE;
+
 		if (nextToken->type == RPARANTHESIS)
 		{
 			consumeNextToken();
+			elseLBL = newLable();
+			fprintf(filePtrDest, "BRF %s \n", elseLBL);
+			
 			if (BLOCK() == EXIT_FAILURE)
 				return EXIT_FAILURE;
 
+			exitLBL = newLable();
+			fprintf(filePtrDest, "BRF %s \n", exitLBL);
+
+			fprintf(filePtrDest, "[%s] \n", elseLBL);
+
 			if (IFSTMT() == EXIT_FAILURE)
 				return EXIT_FAILURE;
+
+			fprintf(filePtrDest, "[%s] \n", exitLBL);
+			
+			free(elseLBL);
+			free(exitLBL);
+			return EXIT_SUCCESS;
 		}
 	}
 	else
 	{
-		if (BLOCK() == EXIT_FAILURE)
-			return EXIT_FAILURE;
+		return BLOCK();
 	}
-	return EXIT_SUCCESS;
 }
 
 int VARDEC()
@@ -294,6 +302,7 @@ int VARDEC()
 			return EXIT_FAILURE;
 
 		fprintf(filePtrDest, "ASSINT\n");
+		return EXIT_SUCCESS;
 		break;
 	case COMMA:
 		consumeNextToken();
@@ -303,6 +312,7 @@ int VARDEC()
 	default:
 		return EXIT_SUCCESS;
 	}
+	return EXIT_SUCCESS;
 }
 
 int ARGS()
@@ -324,7 +334,7 @@ int ARGS_()
 		return EXIT_FAILURE;
 	}
 	
-	if (nextToken == COMMA)
+	if (nextToken->type == COMMA)
 	{
 		consumeNextToken();
 		if (EXPR() == EXIT_FAILURE)
@@ -332,11 +342,12 @@ int ARGS_()
 
 		if (ARGS_() == EXIT_FAILURE)
 			return EXIT_FAILURE;
+
+		return EXIT_SUCCESS;
 	}
 	else
 		return EXIT_SUCCESS;
 }
-
 
 int EXPR()
 {
@@ -435,7 +446,7 @@ int TERM()
 		printf("Parser error! Could not get next token. ");
 		return EXIT_FAILURE;
 	}
-
+	TOKEN* id = NULL;
 	switch (nextToken->type)
 	{
 	case NUM:
@@ -446,12 +457,12 @@ int TERM()
 
 		break;
 	case ID:
-		TOKEN* id = malloc(sizeof(TOKEN));
+		id = malloc(sizeof(TOKEN));
 		id = nextToken;
 		consumeNextToken();
 		if (TERM_(id) == EXIT_FAILURE)
 			return EXIT_FAILURE;
-
+		deleteToken(&id);
 		break;
 	case LPARANTHESIS:
 		consumeNextToken();

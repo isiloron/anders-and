@@ -24,7 +24,6 @@ int IDENT();
 //skreven
 int IFSTMT();
 int IFSTMT_();
-int IFSTMT__();
 int VARDEC();
 int ARGS();
 int ARGS_();

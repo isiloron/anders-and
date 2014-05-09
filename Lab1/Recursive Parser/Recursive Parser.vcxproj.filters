@@ -22,14 +22,14 @@
     <Filter Include="Source Files\Parser">
       <UniqueIdentifier>{ca836a13-0c67-4986-b5d9-1f8868308f7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Main Headers">
-      <UniqueIdentifier>{570d36fc-2d9d-40ed-8a3d-295b0190287b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Lexical Analyzer Headers">
       <UniqueIdentifier>{ff4c1634-6f72-4a19-a8f9-89fc854e2b17}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Parser Headers">
       <UniqueIdentifier>{caec27f6-909f-4df9-ac9d-f7713941cd04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Main Headers">
+      <UniqueIdentifier>{570d36fc-2d9d-40ed-8a3d-295b0190287b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
