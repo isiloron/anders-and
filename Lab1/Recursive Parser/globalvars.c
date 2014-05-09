@@ -10,7 +10,13 @@ int prepareGlobalVars(char* fileName)
     filePtrSource = fopen(fileName, "r");
     if (filePtrSource == NULL)
     {
-        printf("Unable to open file: %s \n",fileName);
+        printf("Unable to open file: %s\n",fileName);
+        return EXIT_FAILURE;
+    }
+    filePtrDest = fopen("compiledTrac42VMCode.txt", "w");
+    if (filePtrDest == NULL)
+    {
+        printf("Unable to open file: compiledTrac42VMCode.txt\n");
         return EXIT_FAILURE;
     }
     lineNumber = 1;

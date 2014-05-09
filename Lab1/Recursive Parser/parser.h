@@ -7,10 +7,9 @@
 #include "globalvars.h"
 
 //linus
-void START();
-void START_();
-void FUNCDEF();
-void TYPE();
+int START();
+int START_();
+int TYPE();
 void PARS();
 void PARS_();
 void BLOCK();

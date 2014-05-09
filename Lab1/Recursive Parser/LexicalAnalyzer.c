@@ -12,6 +12,7 @@ TOKEN* getNextToken()
         //end of file
         if (nextCharacter == EOF)
         {
+            printf("End of file reached!\n");
             return NULL;
         }
         
@@ -65,13 +66,15 @@ TOKEN* getNextToken()
 			{
                 if (peekOnNextChar() == EOF)
                 {
-                    printf("Comment end marker missing!\n",lineNumber);
+                    printf("Comment end marker missing! End of file reached!\n");
                     return NULL;
                 }
-                else if (peekOnNextChar() == '\n')
+                
+                if (peekOnNextChar() == '\n')
                 {
                     lineNumber++;
                 }
+
 				consumeNextChar();
 			}
 
@@ -82,12 +85,15 @@ TOKEN* getNextToken()
 		//linecomment
 		else if (nextCharacter == '/' && next_next_character == '/')
 		{
-			while (peekOnNextChar() != '\n')
-			{
-				consumeNextChar();
-			}
-			consumeNextChar();
-            lineNumber++;
+            while (peekOnNextChar() != '\n' || peekOnNextChar() != EOF)
+            {
+                consumeNextChar();
+            }
+            if (peekOnNextChar() == '\n')
+            {
+                consumeNextChar();
+                lineNumber++;
+            }
 		}
         //special character
         else
