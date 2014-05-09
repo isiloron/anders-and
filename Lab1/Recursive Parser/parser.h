@@ -8,9 +8,8 @@
 
 //linus
 int START();
-void START_();
-void FUNCDEF();
-void TYPE();
+int START_();
+int TYPE();
 void PARS();
 void PARS_();
 void BLOCK();
