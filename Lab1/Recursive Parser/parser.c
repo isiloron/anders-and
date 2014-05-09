@@ -169,33 +169,51 @@ int TYPE()
 
 int IFSTMT()
 {
+	peekOnNextToken();
 
+	switch (currentToken->type)
+	{
+	case ELSE:
+		consumeToken();
+		IFSTMT_();
+	default:
+		return EXIT_SUCCESS;
+	}
 }
 
 int IFSTMT_()
 {
+	peekOnNextToken();
 
+	switch (currentToken->type)
+	{
+	case IF:
+		consumeToken();
+		peekOnNextToken();
+		IFSTMT_();
+	default:
+		BLOCK();
+	}
 }
 
 int VARDEC()
 {
-	if (currentToken == NULL)
-		currentToken = getNextToken();
+	peekOnNextToken();
 
 	switch (currentToken->type)
 	{
 	case ASSIGNOP:
+		consumeToken();
 		EXPR();
 		VARDEC();
 		fprintf(filePtrDest, "ASSINT\n");
 		break;
 	case COMMA:
-		currentToken = getNextToken();
+		consumeToken();
 		VARDEC();
 		break;
 	default:
 		return EXIT_SUCCESS;
-
 	}
 }
 
@@ -208,8 +226,7 @@ int ARGS()
 
 int ARGS_()
 {
-	if (currentToken == NULL)
-		currentToken = getNextToken();
+	peekOnNextToken();
 	
 	if (currentToken == COMMA)
 	{
@@ -230,23 +247,22 @@ int EXPR()
 
 int EXPR_()
 {	
-	if (currentToken == NULL)
-		currentToken = getNextToken();
+	peekOnNextToken();
 
 	switch (currentToken->type)
 	{
 	case ASSIGNOP:
-		currentToken = NULL;
+		consumeToken();
 		EXPR();
 		fprintf(filePtrDest, "ASSINT\n");
 		break;
 	case LTOP:
-		currentToken = NULL;
+		consumeToken();
 		EXPR();
 		fprintf(filePtrDest, "LTINT\n");
 		break;
 	case LOEOP:
-		currentToken = NULL;
+		consumeToken();
 		EXPR();
 		fprintf(filePtrDest, "LEINT\n");
 		break;
@@ -266,18 +282,17 @@ int SUM()
 
 int SUM_()
 {
-	if (currentToken == NULL)
-		currentToken = getNext();
+	peekOnNextToken();
 
 	switch (currentToken->type)
 	{
 	case PLUSOP:
-		currentToken = NULL;
+		consumeToken();
 		SUM();
 		fprintf(filePtrDest, "ADD\n");
 		break;
 	case MINUSOP:
-		currentToken = NULL;
+		consumeToken();
 		SUM();
 		fprintf(filePtrDest, "SUB\n");
 		break;
@@ -289,28 +304,25 @@ int SUM_()
 
 int TERM()
 {
-	if (currentToken == NULL)
-		currentToken = getNext();
+	peekOnNextToken();
 
 	switch (currentToken->type)
 	{
 	case NUM:
 		fprintf(filePtrDest, "PUSHINT %s \n", currentToken->attribute);
-		currentToken = NULL;
+		consumeToken();
 		TERM_();
 		break;
 	case ID:
 		TOKEN* id = malloc(sizeof(TOKEN));
 		id = currentToken;
-		currentToken = NULL;
+		consumeToken();
 		TERM__(id);
 		break;
 	case LPARANTHESIS:
-		currentToken = NULL;
+		consumeToken();
 		EXPR();
-
-		if (currentToken == NULL)
-			currentToken = getNext();
+		peekOnNextToken();
 
 		if (currentToken->type != RPARANTHESIS)
 		{
@@ -319,7 +331,7 @@ int TERM()
 		}
 		break;
 	case NOTOP:
-		currentToken = NULL;
+		consumeToken();
 		TERM();
 		fprintf(filePtrDest, "NOT \n");
 		break;
@@ -332,17 +344,16 @@ int TERM()
 
 int TERM_()
 {
-	if (currentToken == NULL)
-		currentToken = getNext();
+	peekOnNextToken();
 
 	switch (currentToken->type)
 	{
 	case MULTOP:
-		currentToken = NULL;
+		consumeToken();
 		TERM();
 		break;
 	case DIVOP:
-		currentToken = NULL;
+		consumeToken();
 		TERM();
 		break;
 	default:
@@ -353,21 +364,15 @@ int TERM_()
 
 int TERM__(TOKEN* prev)
 {
-	if (currentToken == NULL)
-	{
-		currentToken = getNext();
-	}
+	peekOnNextToken();
 	
 	if (currentToken->type == LPARANTHESIS)
 	{
 		fprintf(filePtrDest, "DECL @\n");
 		fprintf(filePtrDest, "PUSHINT ");
 		ARGS();
+		peekOnNextToken();
 
-		if (currentToken == NULL)
-		{
-			currentToken = getNext();
-		}
 		if (currentToken->type != RPARANTHESIS)
 		{
 			printf("Parser error! Missing right paranthesis on line %d", lineNumber);
@@ -378,8 +383,7 @@ int TERM__(TOKEN* prev)
 			fprintf(filePtrDest, "BSR %s \n", prev->lexeme);
 			free(prev);
 			return EXIT_SUCCESS;
-		}
-			
+		}	
 	}
 	else
 	{
