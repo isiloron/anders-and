@@ -13,6 +13,9 @@ FILE* filePtrDest;
 //Current line
 int lineNumber;
 
+//lable counter
+int lableCounter;
+
 //token list
 TOKENNODE* tokenList;
 

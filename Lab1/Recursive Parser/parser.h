@@ -6,9 +6,13 @@
 #include "lexicalAnalyzer.h"
 #include "globalvars.h"
 
+//max lable string size
+#define LABLESIZE 16
+
 //token handling
 int getNextToken();
 void consumeNextToken();
+char* newLable();
 
 //linus
 int START();
@@ -19,7 +23,7 @@ int PARS_();
 int BLOCK();
 int BLOCK_();
 int STMT();
-int IDENT();
+int IDENT(TOKEN* idToken);
 
 //skreven
 int IFSTMT();
