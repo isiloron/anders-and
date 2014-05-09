@@ -6,6 +6,10 @@
 #include "lexicalAnalyzer.h"
 #include "globalvars.h"
 
+//token handling
+int peekOnNextToken();
+int consumeToken();
+
 //linus
 int START();
 int START_();

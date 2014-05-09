@@ -1,6 +1,39 @@
 #include "parser.h"
 
+int peekOnNextToken()
+{
+    if (currentToken == NULL)
+    {
+        currentToken = getNextToken();
+        if (currentToken == NULL)
+        {
+            printf("No more tokens! Line: %d\n", lineNumber);
+            return EXIT_FAILURE;
+        }
+        else
+        {
+            return EXIT_SUCCESS;
+        }
+    }
+    else
+    {
+        return EXIT_SUCCESS;
+    }
+}
 
+int consumeToken()
+{
+    deleteToken(&currentToken);
+    if (currentToken == NULL)
+    {
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        printf("Could not consume token!\n");
+        return EXIT_FAILURE;
+    }
+}
 
 int START()
 {
