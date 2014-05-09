@@ -24,21 +24,19 @@ void ASSIGN();
 void FUNCCALL();
 
 //skreven
-void IFSTMT();
-void IFSTMT_();
-void IFSTMT__();
-void WHILESTMT();
-void VARDEC();
-void VARDEC_();
-void ARGS();
-void ARGS_();
-void EXPR();
-void EXPR_();
-void SUM();
-void SUM_();
-void TERM();
-void TERM_();
-void TERM__();
+int IFSTMT();
+int IFSTMT_();
+int IFSTMT__();
+int VARDEC();
+int ARGS();
+int ARGS_();
+int EXPR();
+int EXPR_();
+int SUM();
+int SUM_();
+int TERM();
+int TERM_();
+int TERM__(TOKEN* prev);
 
 
 #endif
