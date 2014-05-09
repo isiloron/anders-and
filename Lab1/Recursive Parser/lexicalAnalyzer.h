@@ -5,7 +5,7 @@
 #include "tokens.h"
 #include "globalvars.h"
 
-TOKEN* getNextToken();
+TOKEN* readNextToken();
 char consumeNextChar();
 char peekOnNextChar();
 char peekOnNextNextChar();

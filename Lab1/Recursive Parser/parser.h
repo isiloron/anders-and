@@ -7,8 +7,8 @@
 #include "globalvars.h"
 
 //token handling
-int peekOnNextToken();
-int consumeToken();
+int getNextToken();
+int consumeNextToken();
 
 //linus
 int START();

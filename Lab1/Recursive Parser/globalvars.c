@@ -20,6 +20,6 @@ int prepareGlobalVars(char* fileName)
         return EXIT_FAILURE;
     }
     lineNumber = 1;
-    currentToken = NULL;
+    nextToken = NULL;
     return EXIT_SUCCESS;
 }

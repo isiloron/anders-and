@@ -1,6 +1,6 @@
 #include "lexicalAnalyzer.h"
 
-TOKEN* getNextToken()
+TOKEN* readNextToken()
 {	
     TOKEN* newToken;
 	char nextCharacter, next_next_character;

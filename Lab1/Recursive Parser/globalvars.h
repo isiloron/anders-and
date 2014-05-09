@@ -16,8 +16,8 @@ int lineNumber;
 //token list
 TOKENNODE* tokenList;
 
-//current token to be parsed
-TOKEN* currentToken;
+//next token to be parsed
+TOKEN* nextToken;
 
 int prepareGlobalVars(char* fileName);
 

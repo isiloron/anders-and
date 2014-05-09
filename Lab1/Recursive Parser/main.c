@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	while (!feof(filePtrSource))
 	{
 		TOKEN* newToken;
-		newToken = getNextToken(tokenList);
+		newToken = readNextToken(tokenList);
 		test_lexical_analizer(newToken);
 	}
 	getchar();
