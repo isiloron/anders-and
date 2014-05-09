@@ -266,7 +266,7 @@ int STMT()
         return EXIT_FAILURE;
     }
     TOKEN* idToken;
-    char* elseLable, exitLable, loopStart, loopExit;
+    char *elseLable, *exitLable, *loopStart, *loopExit;
     switch (nextToken->type)
     {
     case ID:
@@ -288,7 +288,7 @@ int STMT()
         }
         else
         {
-            printf("Parsing error! Expected ';'! Got %s. Line: %d\n",nextToken->lexeme,lineNumber);
+            printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
             return EXIT_FAILURE;
         }
         break;
@@ -334,7 +334,7 @@ int STMT()
         }
         else
         {
-            printf("Parsing error! Expected '('! Got %s. Line: %d\n",nextToken->lexeme,lineNumber);
+            printf("Parsing error! Expected '('! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
             return EXIT_FAILURE;
         }
         break;
@@ -348,7 +348,7 @@ int STMT()
         {
             consumeNextToken();
             loopStart = newLable();
-            fprintf(filePtrDest,"[%s]\n",loopStart);
+            fprintf(filePtrDest, "[%s]\n", loopStart);
             if (EXPR() == EXIT_FAILURE)
             {
                 return EXIT_FAILURE;
@@ -385,16 +385,130 @@ int STMT()
         }
         break;
     case READ:
-
+        consumeNextToken();
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (nextToken->type == ID)
+        {
+            fprintf(filePtrDest, "LVAL %s\n", nextToken->lexeme);
+            fprintf(filePtrDest, "READINT\n");
+            fprintf(filePtrDest, "ASSINT\n");
+            consumeNextToken();
+            if (getNextToken() == EXIT_FAILURE)
+            {
+                return EXIT_FAILURE;
+            }
+            if (nextToken->type == SEMICOLON)
+            {
+                consumeNextToken();
+                return EXIT_SUCCESS;
+            }
+            else
+            {
+                printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+                return EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            printf("Parsing error! Expected ID! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
         break;
     case WRITE:
-
+        consumeNextToken();
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (nextToken->type == ID)
+        {
+            fprintf(filePtrDest, "RVALINT %s\n", nextToken->lexeme);
+            fprintf(filePtrDest, "WRITEINT\n");
+            fprintf(filePtrDest, "POP 1\n");
+            consumeNextToken();
+            if (getNextToken() == EXIT_FAILURE)
+            {
+                return EXIT_FAILURE;
+            }
+            if (nextToken->type == SEMICOLON)
+            {
+                consumeNextToken();
+                return EXIT_SUCCESS;
+            }
+            else
+            {
+                printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+                return EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            printf("Parsing error! Expected ID! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
         break;
     case INT:
+        consumeNextToken();
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
 
+        if (nextToken->type == ID)
+        {
+            fprintf(filePtrDest,"DECL %s\n",nextToken->lexeme);
+            consumeNextToken();
+            if (VARDEC() == EXIT_FAILURE)
+            {
+                return EXIT_FAILURE;
+            }
+            if (getNextToken() == EXIT_FAILURE)
+            {
+                return EXIT_FAILURE;
+            }
+            if (nextToken->type == SEMICOLON)
+            {
+                consumeNextToken();
+                return EXIT_SUCCESS;
+            }
+            else
+            {
+                printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+                return EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            printf("Parsing error! Expected ID! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
         break;
     case RETURN:
-
+        consumeNextToken();
+        fprintf(filePtrDest, "LVAL @\n");
+        if (EXPR() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        fprintf(filePtrDest, "ASSINT\n");
+        fprintf(filePtrDest, "RTS\n");
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (nextToken->type == SEMICOLON)
+        {
+            consumeNextToken();
+            return EXIT_SUCCESS;
+        }
+        else
+        {
+            printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
         break;
     default:
         printf("Parsing error! Expected id, if, while, read, write, int or return! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
@@ -403,12 +517,54 @@ int STMT()
     }
 }
 
-int IDENT()
+int IDENT(TOKEN* idToken)
 {
-
+    if (getNextToken() == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+    char* lable = malloc(BUFFERSIZE); // saving lable for subroutine branching
+    strcpy(lable, nextToken->lexeme);
+    switch (nextToken->type)
+    {
+    case ASSIGNOP:
+        consumeNextToken();
+        fprintf(filePtrDest, "LVAL %s\n", idToken->lexeme);
+        if (EXPR() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        fprintf(filePtrDest, "ASSINT\n");
+        return EXIT_SUCCESS;
+        break;
+    case LPARANTHESIS:
+        consumeNextToken();
+        fprintf(filePtrDest, "DECL @\n");
+        if (ARGS(lable) == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (nextToken->type == RPARANTHESIS)
+        {
+            consumeNextToken();
+            fprintf(filePtrDest, "POP 1\n");
+            return EXIT_SUCCESS;
+        }
+        else
+        {
+            printf("Parsing error! Expected ')'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
+        break;
+    default:
+        printf("Parsing error! Expected '=' or '('! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+        return EXIT_FAILURE;
+    }
 }
-
-
 
 int IFSTMT()
 {
@@ -420,6 +576,7 @@ int IFSTMT()
 	if (nextToken->type == ELSE)
 	{
 		consumeNextToken();
+
 		if (IFSTMT_() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 	}
@@ -428,7 +585,7 @@ int IFSTMT()
 
 int IFSTMT_()
 {
-	char* elseLBL, exitLBL;
+	char *elseLBL, *exitLBL;
 
 	if (getNextToken() == EXIT_FAILURE)
 		return EXIT_FAILURE;
@@ -477,6 +634,11 @@ int IFSTMT_()
 			free(exitLBL);
 			return EXIT_SUCCESS;
 		}
+        else
+        {
+            printf("Parser error! Missing ')' on line %d", lineNumber);
+            return EXIT_FAILURE;
+        }
 	}
 	else
 	{
@@ -488,50 +650,49 @@ int VARDEC()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
-		printf("Parser error! Could not get next token. ");
 		return EXIT_FAILURE;
 	}
 
-	switch (nextToken->type)
-	{
-	case ASSIGNOP:
-		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
-			return EXIT_FAILURE;
-
-		if(VARDEC() == EXIT_FAILURE)
-			return EXIT_FAILURE;
-
-		fprintf(filePtrDest, "ASSINT\n");
-		return EXIT_SUCCESS;
-		break;
-	case COMMA:
-		consumeNextToken();
-		if(VARDEC() == EXIT_FAILURE)
-			return EXIT_FAILURE;
-		break;
-	default:
-		return EXIT_SUCCESS;
-	}
-	return EXIT_SUCCESS;
+    if (nextToken->type == COMMA)
+    {
+        consumeNextToken();
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        if (nextToken->type == ID)
+        {
+            fprintf(filePtrDest, "DECL %s\n", nextToken->lexeme);
+            consumeNextToken();
+            return VARDEC();
+        }
+        else
+        {
+            printf("Parser error! Expected ID! Got %s. Line: %d", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        return EXIT_SUCCESS;
+    }
 }
 
-int ARGS()
+int ARGS(char* lable)
 {
 	if(EXPR() == EXIT_FAILURE)
 		return EXIT_FAILURE;
 
-	if(ARGS_() == EXIT_FAILURE)
+	if(ARGS_(lable) == EXIT_FAILURE)
 		return EXIT_FAILURE;
-
+    fprintf(filePtrDest,"POP 1\n");
 	return EXIT_SUCCESS;
 }
 
-int ARGS_()
+int ARGS_(char* lable)
 {
 	if (getNextToken() == EXIT_FAILURE)
-	{
-		printf("Parser error! Could not get next token. ");
+    {
 		return EXIT_FAILURE;
 	}
 	
@@ -541,13 +702,16 @@ int ARGS_()
 		if (EXPR() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
-		if (ARGS_() == EXIT_FAILURE)
+		if (ARGS_(lable) == EXIT_FAILURE)
 			return EXIT_FAILURE;
-
+        fprintf(filePtrDest, "POP 1\n");
 		return EXIT_SUCCESS;
 	}
-	else
-		return EXIT_SUCCESS;
+    else
+    {
+        fprintf(filePtrDest, "BSR %s\n", lable);
+        return EXIT_SUCCESS;
+    }
 }
 
 int EXPR()
@@ -647,7 +811,7 @@ int TERM()
 		printf("Parser error! Could not get next token. ");
 		return EXIT_FAILURE;
 	}
-	TOKEN* id = NULL;
+    char* lable;
 	switch (nextToken->type)
 	{
 	case NUM:
@@ -658,12 +822,17 @@ int TERM()
 
 		break;
 	case ID:
-		id = malloc(sizeof(TOKEN));
-		id = nextToken;
+		lable = malloc(BUFFERSIZE);
 		consumeNextToken();
-		if (TERM_(id) == EXIT_FAILURE)
-			return EXIT_FAILURE;
-		deleteToken(&id);
+        if (TERM__(lable) == EXIT_SUCCESS)
+        {
+            free(lable);
+            return EXIT_SUCCESS;
+        }
+        else
+        {
+            return EXIT_FAILURE;
+        }
 		break;
 	case LPARANTHESIS:
 		consumeNextToken();
@@ -725,7 +894,7 @@ int TERM_()
 	return EXIT_SUCCESS;
 }
 
-int TERM__(TOKEN* prev)
+int TERM__(char* lable)
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -737,9 +906,8 @@ int TERM__(TOKEN* prev)
 	{
 		consumeNextToken();
 		fprintf(filePtrDest, "DECL @\n");
-		fprintf(filePtrDest, "PUSHINT ");
 
-		if (ARGS() == EXIT_FAILURE)
+		if (ARGS(lable) == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
 		if (getNextToken() == EXIT_FAILURE)
@@ -748,23 +916,19 @@ int TERM__(TOKEN* prev)
 			return EXIT_FAILURE;
 		}
 
-		if (nextToken->type != RPARANTHESIS)
+		if (nextToken->type == RPARANTHESIS)
 		{
-			printf("Parser error! Missing right paranthesis on line %d", lineNumber);
-			return EXIT_FAILURE;
+            fprintf(filePtrDest, "POP 1\n");
+            return EXIT_SUCCESS;
 		}
 		else
 		{
-			fprintf(filePtrDest, "BSR %s \n", prev->lexeme);
-			free(prev);
-			return EXIT_SUCCESS;
+            printf("Parser error! Missing right paranthesis on line %d", lineNumber);
+            return EXIT_FAILURE;
 		}	
 	}
 	else
 	{
-		if (TERM_() == EXIT_FAILURE)
-			return EXIT_FAILURE;
-
-		return EXIT_SUCCESS;
+        return TERM_();
 	}
 }

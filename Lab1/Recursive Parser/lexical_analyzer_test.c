@@ -1,6 +1,6 @@
 #include "main.h"
 
-void test_lexical_analizer(TOKEN* newToken)
+void test_lexical_analyzer(TOKEN* newToken)
 {
 	if (newToken != NULL)
 	{

@@ -29,15 +29,15 @@ int IDENT(TOKEN* idToken);
 int IFSTMT();
 int IFSTMT_();
 int VARDEC();
-int ARGS();
-int ARGS_();
+int ARGS(char* lable);
+int ARGS_(char* lable);
 int EXPR();
 int EXPR_();
 int SUM();
 int SUM_();
 int TERM();
 int TERM_();
-int TERM__(TOKEN* prev);
+int TERM__(char* lable);
 
 
 #endif

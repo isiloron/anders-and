@@ -4,18 +4,35 @@
 
 int main(int argc, char* argv[])
 {
-	if (prepareGlobalVars(argv[0]))
+	if (prepareGlobalVars(argv[1]) == EXIT_FAILURE)
 	{
 		printf("Failed to prepare global varaibles!\n");
 		return EXIT_FAILURE;
 	}
+    /*
+    TOKEN* token;
+    while (1)
+    {
+        token = readNextToken();
+        if (token == NULL)
+        {
+            break;
+        }
+        test_lexical_analyzer(token);
+    }
+    */
 
-	while (!feof(filePtrSource))
-	{
-		TOKEN* newToken;
-		newToken = readNextToken(tokenList);
-		test_lexical_analizer(newToken);
-	}
+    if (START() == EXIT_FAILURE)
+    {
+        if (peekOnNextChar() == EOF)
+            printf("Parsing complete!\n");
+        else
+            printf("Parsing incomplete!\n");
+    }
+
+    fclose(filePtrDest);
+    fclose(filePtrSource);
+
 	getchar();
 }
 
