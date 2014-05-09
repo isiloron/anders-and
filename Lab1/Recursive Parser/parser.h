@@ -8,7 +8,7 @@
 
 //token handling
 int getNextToken();
-int consumeNextToken();
+void consumeNextToken();
 
 //linus
 int START();
