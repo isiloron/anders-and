@@ -48,7 +48,8 @@ typedef struct token_node
 TOKEN* createToken(char* lexeme, int type, int attr);
 TOKEN* createEmptyToken();
 void deleteToken(TOKEN** token);
-void consumeToken(TOKEN** token);
+int peekOnNextToken();
+int consumeToken(TOKEN** token);
 TOKEN* tokenCopy(TOKEN* token);
 int generateTokenList();
 TOKENNODE* createTokenNode(TOKEN* token, TOKENNODE* node);

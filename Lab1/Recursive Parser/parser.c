@@ -134,12 +134,6 @@ int TYPE()
     }
 }
 
-
-		return EXIT_SUCCESS;
-	}
-	return EXIT_SUCCESS;
-}
-
 int IFSTMT()
 {
 
