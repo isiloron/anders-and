@@ -21,18 +21,9 @@ int getNextToken()
     }
 }
 
-int consumeNextToken()
+void consumeNextToken()
 {
     deleteToken(&nextToken);
-    if (nextToken == NULL)
-    {
-        return EXIT_SUCCESS;
-    }
-    else
-    {
-        printf("Could not consume token!\n");
-        return EXIT_FAILURE;
-    }
 }
 
 int START()
@@ -45,8 +36,9 @@ int START()
 
     //parse identifier
     if (getNextToken() == EXIT_FAILURE)
+    {
         return EXIT_FAILURE;
-
+    }
     if (nextToken->type == ID)
     {
         fprintf(filePtrDest, "[%s]\n", nextToken->lexeme);
@@ -56,15 +48,16 @@ int START()
         printf("Parsing error! Expected identifier! Got '%s'.\n", nextToken->lexeme);
         return EXIT_FAILURE;
     }
-    if (consumeNextToken() == EXIT_FAILURE)
-        return EXIT_FAILURE;
+    consumeNextToken();
 
     //parse left paranthesis
     if (getNextToken() == EXIT_FAILURE)
+    {
         return EXIT_FAILURE;
+    }
     if (nextToken->type == LPARANTHESIS)
     {
-        deleteToken(&nextToken);
+        consumeNextToken();
     }
     else
     {
@@ -79,18 +72,13 @@ int START()
     }
 
     //parse left paranthesis
-    if (nextToken == NULL)
+    if (getNextToken() == EXIT_FAILURE)
     {
-        nextToken = readNextToken();
-        if (nextToken == NULL)
-        {
-            printf("Could not get next token! Line: %d\n", lineNumber);
-            return EXIT_FAILURE;
-        }
+        return EXIT_FAILURE;
     }
     if (nextToken->type == RPARANTHESIS)
     {
-        deleteToken(&nextToken);
+        consumeNextToken();
     }
     else
     {
@@ -115,47 +103,108 @@ int START()
 
 int START_()
 {
-    if (nextToken == NULL)
+    if (getNextToken() == EXIT_FAILURE)
     {
-        nextToken = readNextToken();
-        if (nextToken == NULL)
+        if (peekOnNextChar() == EOF)
         {
-            printf("Could not get next token! Line: %d\n", lineNumber);
+            printf("Finished parsing!\n");
             return EXIT_SUCCESS;
         }
         else
         {
-            return START();
+            return EXIT_FAILURE;
         }
+    }
+    else
+    {
+        return START();
     }
 }
 
 int TYPE()
 {
-    if (nextToken == NULL)
+    if (getNextToken() == EXIT_FAILURE)
     {
-        nextToken = readNextToken();
-        if (nextToken == NULL)
-        {
-            printf("Could not get next token! Line: %d\n", lineNumber);
-            return EXIT_FAILURE;
-        }
+        return EXIT_FAILURE;
     }
     
     switch (nextToken->type)
     {
     case INT:
-        deleteToken(&nextToken);
-        return EXIT_SUCCESS;
-        break;
     case VOID:
-        deleteToken(&nextToken);
+        consumeNextToken();
         return EXIT_SUCCESS;
         break;
     default:
         printf("Parsing error! Expected 'int' or 'void'! Got '%s'. Line: %d\n", nextToken->lexeme, lineNumber);
         return EXIT_FAILURE;
     }
+}
+
+int PARS()
+{
+    if (getNextToken() == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (nextToken->type == INT)
+    {
+        consumeNextToken();
+
+        if (getNextToken() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        
+        if (nextToken->type == ID)
+        {
+            consumeNextToken();
+            return PARS_();
+        }
+        else
+        {
+            printf("Parsing error! Expected identifier! Got '%s'. Line: %d\n", nextToken->lexeme, lineNumber);
+            return EXIT_FAILURE;
+        }
+    }
+    else if (nextToken->type == VOID)
+    {
+        consumeNextToken();
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        printf("Parsing error! Expected int or void! Got '%s'. Line: %d\n", nextToken->lexeme, lineNumber);
+        return EXIT_FAILURE;
+    }
+}
+
+int PARS_()
+{
+    if (getNextToken() == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (nextToken->type == COMMA)
+    {
+
+    }
+    else
+    {
+        return EXIT_SUCCESS;
+    }
+}
+
+int BLOCK()
+{
+
+}
+
+int BLOCK_()
+{
+
 }
 
 int IFSTMT()
