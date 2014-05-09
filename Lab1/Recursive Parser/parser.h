@@ -14,14 +14,12 @@ int consumeNextToken();
 int START();
 int START_();
 int TYPE();
-void PARS();
-void PARS_();
-void BLOCK();
-void BLOCK_();
-void STMT();
-void IDENT();
-void ASSIGN();
-void FUNCCALL();
+int PARS();
+int PARS_();
+int BLOCK();
+int BLOCK_();
+int STMT();
+int IDENT();
 
 //skreven
 void IFSTMT();
