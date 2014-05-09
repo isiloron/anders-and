@@ -160,12 +160,12 @@ int TYPE()
 
 int IFSTMT()
 {
-	peekOnNextToken();
+	getNextToken();
 
-	switch (currentToken->type)
+	switch (nextToken->type)
 	{
 	case ELSE:
-		consumeToken();
+		consumeNextToken();
 		IFSTMT_();
 	default:
 		return EXIT_SUCCESS;
@@ -174,13 +174,13 @@ int IFSTMT()
 
 int IFSTMT_()
 {
-	peekOnNextToken();
+	getNextToken();
 
-	switch (currentToken->type)
+	switch (nextToken->type)
 	{
 	case IF:
-		consumeToken();
-		peekOnNextToken();
+		consumeNextToken();
+		getNextToken();
 		IFSTMT_();
 	default:
 		BLOCK();
@@ -189,18 +189,18 @@ int IFSTMT_()
 
 int VARDEC()
 {
-	peekOnNextToken();
+	getNextToken,();
 
 	switch (nextToken->type)
 	{
 	case ASSIGNOP:
-		consumeToken();
+		consumeNextToken();
 		EXPR();
 		VARDEC();
 		fprintf(filePtrDest, "ASSINT\n");
 		break;
 	case COMMA:
-		consumeToken();
+		consumeNextToken();
 		VARDEC();
 		break;
 	default:
@@ -217,7 +217,7 @@ int ARGS()
 
 int ARGS_()
 {
-	peekOnNextToken();
+	getNextToken();
 	
 	if (nextToken == COMMA)
 	{
@@ -238,22 +238,22 @@ int EXPR()
 
 int EXPR_()
 {	
-	peekOnNextToken();
+	getNextToken();
 
 	switch (nextToken->type)
 	{
 	case ASSIGNOP:
-		consumeToken();
+		consumeNextToken();
 		EXPR();
 		fprintf(filePtrDest, "ASSINT\n");
 		break;
 	case LTOP:
-		consumeToken();
+		consumeNextToken();
 		EXPR();
 		fprintf(filePtrDest, "LTINT\n");
 		break;
 	case LOEOP:
-		consumeToken();
+		consumeNextToken();
 		EXPR();
 		fprintf(filePtrDest, "LEINT\n");
 		break;
@@ -273,17 +273,17 @@ int SUM()
 
 int SUM_()
 {
-	peekOnNextToken();
+	getNextToken();
 
 	switch (nextToken->type)
 	{
 	case PLUSOP:
-		consumeToken();
+		consumeNextToken();
 		SUM();
 		fprintf(filePtrDest, "ADD\n");
 		break;
 	case MINUSOP:
-		consumeToken();
+		consumeNextToken();
 		SUM();
 		fprintf(filePtrDest, "SUB\n");
 		break;
@@ -295,25 +295,25 @@ int SUM_()
 
 int TERM()
 {
-	peekOnNextToken();
+	getNextToken();
 
 	switch (nextToken->type)
 	{
 	case NUM:
 		fprintf(filePtrDest, "PUSHINT %s \n", nextToken->attribute);
-		consumeToken();
+		consumeNextToken();
 		TERM_();
 		break;
 	case ID:
 		TOKEN* id = malloc(sizeof(TOKEN));
 		id = nextToken;
-		consumeToken();
+		consumeNextToken();
 		TERM__(id);
 		break;
 	case LPARANTHESIS:
-		consumeToken();
+		consumeNextToken();
 		EXPR();
-		peekOnNextToken();
+		getNextToken();
 
 		if (nextToken->type != RPARANTHESIS)
 		{
@@ -322,7 +322,7 @@ int TERM()
 		}
 		break;
 	case NOTOP:
-		consumeToken();
+		consumeNextToken();
 		TERM();
 		fprintf(filePtrDest, "NOT \n");
 		break;
@@ -335,16 +335,16 @@ int TERM()
 
 int TERM_()
 {
-	peekOnNextToken();
+	getNextToken();
 
 	switch (nextToken->type)
 	{
 	case MULTOP:
-		consumeToken();
+		consumeNextToken();
 		TERM();
 		break;
 	case DIVOP:
-		consumeToken();
+		consumeNextToken();
 		TERM();
 		break;
 	default:
@@ -355,14 +355,14 @@ int TERM_()
 
 int TERM__(TOKEN* prev)
 {
-	peekOnNextToken();
+	getNextToken();
 	
 	if (nextToken->type == LPARANTHESIS)
 	{
 		fprintf(filePtrDest, "DECL @\n");
 		fprintf(filePtrDest, "PUSHINT ");
 		ARGS();
-		peekOnNextToken();
+		getNextToken();
 
 		if (nextToken->type != RPARANTHESIS)
 		{
