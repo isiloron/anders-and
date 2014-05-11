@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     }
     */
 
-    if (START() == EXIT_FAILURE)
+    if (START_1() == EXIT_FAILURE)
     {
         if (peekOnNextChar() == EOF)
             printf("Parsing complete!\n");

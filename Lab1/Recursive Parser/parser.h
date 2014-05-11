@@ -15,29 +15,31 @@ void consumeNextToken();
 char* newLable();
 
 //linus
-int START();
-int START_();
+int START_1();
+int START_2();
 int TYPE();
-int PARS();
-int PARS_();
-int BLOCK();
-int BLOCK_();
+int PARS_1();
+int PARS_2();
+int BLOCK_1();
+int BLOCK_2();
 int STMT();
 int IDENT(TOKEN* idToken);
 
 //skreven
-int IFSTMT();
-int IFSTMT_();
+int IFSTMT_1();
+int IFSTMT_2();
 int VARDEC();
-int ARGS(char* lable);
-int ARGS_(char* lable);
-int EXPR();
-int EXPR_();
-int SUM();
-int SUM_();
-int TERM();
-int TERM_();
-int TERM__(char* lable);
+int ARGS_1(char* lable);
+int ARGS_2(char* lable);
+int EXPR_1();
+int EXPR_2();
+int EXPR_3();
+int EXPR_4();
+int SUM_1();
+int SUM_2();
+int TERM_1();
+int TERM_2();
+int TERM_3(char* lable);
 int NOTOPERAND();
 
 

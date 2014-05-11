@@ -35,7 +35,7 @@ char* newLable()
     return lable;
 }
 
-int START()
+int START_1()
 {
     //parse type (void or int)
     if (TYPE() == EXIT_FAILURE)
@@ -75,7 +75,7 @@ int START()
     }
 
     //parse parameters
-    if (PARS() == EXIT_FAILURE)
+    if (PARS_1() == EXIT_FAILURE)
     {
         return EXIT_FAILURE;
     }
@@ -96,7 +96,7 @@ int START()
     }
 
     //parse block
-    if (BLOCK() == EXIT_FAILURE)
+    if (BLOCK_1() == EXIT_FAILURE)
     {
         return EXIT_FAILURE;
     }
@@ -109,7 +109,7 @@ int START()
     fprintf(filePtrDest,"RTS\n");
 
     //parse next function
-    if (START_() == EXIT_FAILURE)
+    if (START_2() == EXIT_FAILURE)
     {
         return EXIT_FAILURE;
     }
@@ -117,7 +117,7 @@ int START()
     return EXIT_SUCCESS;
 }
 
-int START_()
+int START_2()
 {
     if (getNextToken() == EXIT_FAILURE)
     {
@@ -133,7 +133,7 @@ int START_()
     }
     else
     {
-        return START();
+        return START_1();
     }
 }
 
@@ -157,7 +157,7 @@ int TYPE()
     }
 }
 
-int PARS()
+int PARS_1()
 {
     if (getNextToken() == EXIT_FAILURE)
     {
@@ -176,7 +176,7 @@ int PARS()
         if (nextToken->type == ID)
         {
             consumeNextToken();
-            return PARS_();
+            return PARS_2();
         }
         else
         {
@@ -196,7 +196,7 @@ int PARS()
     }
 }
 
-int PARS_()
+int PARS_2()
 {
     if (getNextToken() == EXIT_FAILURE)
     {
@@ -210,14 +210,27 @@ int PARS_()
         {
             return EXIT_FAILURE;
         }
-        if (nextToken->type == ID)
+        if (nextToken->type == INT)
         {
             consumeNextToken();
-            return PARS_();
+            if (getNextToken() == EXIT_FAILURE)
+            {
+                return EXIT_FAILURE;
+            }
+            if (nextToken->type == ID)
+            {
+                consumeNextToken();
+                return PARS_2();
+            }
+            else
+            {
+                printf("Parsing error! Expected identifier! Got '%s'. Line: %d\n", nextToken->lexeme, lineNumber);
+                return EXIT_FAILURE;
+            }
         }
         else
         {
-            printf("Parsing error! Expected identifier! Got '%s'. Line: %d\n", nextToken->lexeme, lineNumber);
+            printf("Parsing error! Expected 'int'! Got '%s'. Line: %d", nextToken->lexeme, lineNumber);
             return EXIT_FAILURE;
         }
     }
@@ -227,7 +240,7 @@ int PARS_()
     }
 }
 
-int BLOCK()
+int BLOCK_1()
 {
     if (getNextToken() == EXIT_FAILURE)
     {
@@ -237,16 +250,20 @@ int BLOCK()
     if (nextToken->type == LBRACE)
     {
         consumeNextToken();
-        return BLOCK_();
+        return BLOCK_2();
+    }
+    else if (nextToken->type == IF || nextToken->type==WHILE)
+    {
+        printf("Parsing error! A single line block cannot be an if or a while statement! Line: %d\n",lineNumber);
+        return EXIT_FAILURE;
     }
     else
     {
-        printf("Parsing error! Expected '{'! Got '%s'. Line: %d\n",nextToken->lexeme,lineNumber);
-        return EXIT_FAILURE;
+        return STMT();
     }
 }
 
-int BLOCK_()
+int BLOCK_2()
 {
     if (getNextToken() == EXIT_FAILURE)
     {
@@ -263,7 +280,7 @@ int BLOCK_()
     }
     else
     {
-        return BLOCK_();
+        return BLOCK_2();
     }
 }
 
@@ -309,7 +326,7 @@ int STMT()
         if (nextToken->type == LPARANTHESIS)
         {
             consumeNextToken();
-            if (EXPR() == EXIT_FAILURE)
+            if (EXPR_1() == EXIT_FAILURE)
             {
                 return EXIT_FAILURE;
             }
@@ -322,14 +339,14 @@ int STMT()
                 consumeNextToken();
                 elseLable = newLable();
                 fprintf(filePtrDest, "BRF %s\n", elseLable);
-                if (BLOCK() == EXIT_FAILURE)
+                if (BLOCK_1() == EXIT_FAILURE)
                 {
                     return EXIT_FAILURE;
                 }
                 exitLable = newLable();
                 fprintf(filePtrDest, "BRA %s\n", exitLable);
                 fprintf(filePtrDest, "[%s]\n", elseLable);
-                if (IFSTMT() == EXIT_FAILURE)
+                if (IFSTMT_1() == EXIT_FAILURE)
                 {
                     return EXIT_FAILURE;
                 }
@@ -361,7 +378,7 @@ int STMT()
             consumeNextToken();
             loopStart = newLable();
             fprintf(filePtrDest, "[%s]\n", loopStart);
-            if (EXPR() == EXIT_FAILURE)
+            if (EXPR_1() == EXIT_FAILURE)
             {
                 return EXIT_FAILURE;
             }
@@ -374,7 +391,7 @@ int STMT()
                 consumeNextToken();
                 loopExit = newLable();
                 fprintf(filePtrDest, "BRF %s\n", loopExit);
-                if (BLOCK() == EXIT_FAILURE)
+                if (BLOCK_1() == EXIT_FAILURE)
                 {
                     return EXIT_FAILURE;
                 }
@@ -431,34 +448,24 @@ int STMT()
         break;
     case WRITE:
         consumeNextToken();
+        if (EXPR_1() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+        fprintf(filePtrDest, "WRITEINT\n");
+        fprintf(filePtrDest, "POP 1\n");
         if (getNextToken() == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
-        if (nextToken->type == ID)
+        if (nextToken->type == SEMICOLON)
         {
-            fprintf(filePtrDest, "RVALINT %s\n", nextToken->lexeme);
-            fprintf(filePtrDest, "WRITEINT\n");
-            fprintf(filePtrDest, "POP 1\n");
             consumeNextToken();
-            if (getNextToken() == EXIT_FAILURE)
-            {
-                return EXIT_FAILURE;
-            }
-            if (nextToken->type == SEMICOLON)
-            {
-                consumeNextToken();
-                return EXIT_SUCCESS;
-            }
-            else
-            {
-                printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
-                return EXIT_FAILURE;
-            }
+            return EXIT_SUCCESS;
         }
         else
         {
-            printf("Parsing error! Expected ID! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
+            printf("Parsing error! Expected ';'! Got %s. Line: %d\n", nextToken->lexeme, lineNumber);
             return EXIT_FAILURE;
         }
         break;
@@ -502,7 +509,7 @@ int STMT()
     case RETURN:
         consumeNextToken();
         fprintf(filePtrDest, "LVAL @\n");
-        if (EXPR() == EXIT_FAILURE)
+        if (EXPR_1() == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
@@ -547,7 +554,7 @@ int IDENT(TOKEN* idToken)
     case ASSIGNOP:
         consumeNextToken();
         fprintf(filePtrDest, "LVAL %s\n", idToken->lexeme);
-        if (EXPR() == EXIT_FAILURE)
+        if (EXPR_1() == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
@@ -559,7 +566,7 @@ int IDENT(TOKEN* idToken)
         fprintf(filePtrDest, "DECL @\n");
         lable = malloc(BUFFERSIZE);
         strcpy(lable, idToken->lexeme);
-        if (ARGS(lable) == EXIT_FAILURE)
+        if (ARGS_1(lable) == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
@@ -586,7 +593,7 @@ int IDENT(TOKEN* idToken)
     }
 }
 
-int IFSTMT()
+int IFSTMT_1()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -597,13 +604,13 @@ int IFSTMT()
 	{
 		consumeNextToken();
 
-		if (IFSTMT_() == EXIT_FAILURE)
+		if (IFSTMT_2() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
 }
 
-int IFSTMT_()
+int IFSTMT_2()
 {
 	char *elseLBL, *exitLBL;
 
@@ -619,7 +626,7 @@ int IFSTMT_()
 		if (nextToken->type == LPARANTHESIS)
 		{
 			consumeNextToken();
-			if (EXPR() == EXIT_FAILURE)
+			if (EXPR_1() == EXIT_FAILURE)
 				return EXIT_FAILURE;
 		}
 		else
@@ -637,7 +644,7 @@ int IFSTMT_()
 			elseLBL = newLable();
 			fprintf(filePtrDest, "BRF %s \n", elseLBL);
 			
-			if (BLOCK() == EXIT_FAILURE)
+			if (BLOCK_1() == EXIT_FAILURE)
 				return EXIT_FAILURE;
 
 			exitLBL = newLable();
@@ -645,7 +652,7 @@ int IFSTMT_()
 
 			fprintf(filePtrDest, "[%s] \n", elseLBL);
 
-			if (IFSTMT() == EXIT_FAILURE)
+			if (IFSTMT_1() == EXIT_FAILURE)
 				return EXIT_FAILURE;
 
 			fprintf(filePtrDest, "[%s] \n", exitLBL);
@@ -662,7 +669,7 @@ int IFSTMT_()
 	}
 	else
 	{
-		return BLOCK();
+		return BLOCK_1();
 	}
 }
 
@@ -699,7 +706,7 @@ int VARDEC()
     }
 }
 
-int ARGS(char* lable)
+int ARGS_1(char* lable)
 {
     if (getNextToken() == EXIT_FAILURE)
         return EXIT_FAILURE;
@@ -711,16 +718,16 @@ int ARGS(char* lable)
         return EXIT_SUCCESS;
     }
 
-	if(EXPR() == EXIT_FAILURE)
+	if(EXPR_1() == EXIT_FAILURE)
 		return EXIT_FAILURE;
 
-	if(ARGS_(lable) == EXIT_FAILURE)
+	if(ARGS_2(lable) == EXIT_FAILURE)
 		return EXIT_FAILURE;
     fprintf(filePtrDest,"POP 1\n");
 	return EXIT_SUCCESS;
 }
 
-int ARGS_(char* lable)
+int ARGS_2(char* lable)
 {
 	if (getNextToken() == EXIT_FAILURE)
     {
@@ -730,10 +737,10 @@ int ARGS_(char* lable)
 	if (nextToken->type == COMMA)
 	{
 		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
+		if (EXPR_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
-		if (ARGS_(lable) == EXIT_FAILURE)
+		if (ARGS_2(lable) == EXIT_FAILURE)
 			return EXIT_FAILURE;
         fprintf(filePtrDest, "POP 1\n");
 		return EXIT_SUCCESS;
@@ -745,14 +752,47 @@ int ARGS_(char* lable)
     }
 }
 
-int EXPR()
+int EXPR_1()
 {
-	if (SUM() == EXIT_FAILURE)
-		return EXIT_FAILURE;
-    return EXPR_();
+    if (EXPR_2() == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+
+    return EXPR_3();
 }
 
-int EXPR_()
+int EXPR_2()
+{
+    if (SUM_1() == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    return EXPR_4();
+}
+
+int EXPR_3()
+{
+    if (getNextToken() == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (nextToken->type == EQOP)
+    {
+        consumeNextToken();
+        if (EXPR_1() == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        fprintf(filePtrDest, "EQINT\n");
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        return EXIT_SUCCESS;
+    }
+}
+
+
+
+int EXPR_4()
 {	
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -761,21 +801,15 @@ int EXPR_()
 
 	switch (nextToken->type)
 	{
-	case EQOP:
-		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
-			return EXIT_FAILURE;
-		fprintf(filePtrDest, "EQINT\n");
-        return EXIT_SUCCESS;
 	case LTOP:
 		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
+		if (EXPR_2() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "LTINT\n");
         return EXIT_SUCCESS;
 	case LOEOP:
 		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
+		if (EXPR_2() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "LEINT\n");
         return EXIT_SUCCESS;
@@ -784,14 +818,14 @@ int EXPR_()
 	}
 }
 
-int SUM()
+int SUM_1()
 {
-	if (TERM() == EXIT_FAILURE)
+	if (TERM_1() == EXIT_FAILURE)
 		return EXIT_FAILURE;
-    return SUM_();
+    return SUM_2();
 }
 
-int SUM_()
+int SUM_2()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -802,13 +836,13 @@ int SUM_()
 	{
 	case PLUSOP:
 		consumeNextToken();
-		if (SUM() == EXIT_FAILURE)
+		if (SUM_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "ADD\n");
         return EXIT_SUCCESS;
 	case MINUSOP:
 		consumeNextToken();
-		if (SUM() == EXIT_FAILURE)
+		if (SUM_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "SUB\n");
         return EXIT_SUCCESS;
@@ -817,7 +851,7 @@ int SUM_()
 	}
 }
 
-int TERM()
+int TERM_1()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -829,12 +863,12 @@ int TERM()
 	case NUM:
         fprintf(filePtrDest, "PUSHINT %d\n", nextToken->attribute);
         consumeNextToken();
-        return TERM_();
+        return TERM_2();
 	case ID:
 		lable = malloc(BUFFERSIZE);
         strcpy(lable, nextToken->lexeme);
 		consumeNextToken();
-        if (TERM__(lable) == EXIT_SUCCESS)
+        if (TERM_3(lable) == EXIT_SUCCESS)
         {
             free(lable);
             return EXIT_SUCCESS;
@@ -845,7 +879,7 @@ int TERM()
         }
 	case LPARANTHESIS:
 		consumeNextToken();
-		if (EXPR() == EXIT_FAILURE)
+		if (EXPR_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
 		if (getNextToken() == EXIT_FAILURE)
@@ -872,7 +906,7 @@ int TERM()
             return EXIT_FAILURE;
         }
         fprintf(filePtrDest, "NOT\n");
-		if (TERM_() == EXIT_FAILURE)
+		if (TERM_2() == EXIT_FAILURE)
 			return EXIT_FAILURE;
         return EXIT_SUCCESS;
 	default:
@@ -881,7 +915,7 @@ int TERM()
 	}
 }
 
-int TERM_()
+int TERM_2()
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -892,13 +926,13 @@ int TERM_()
 	{
 	case MULTOP:
 		consumeNextToken();
-		if (TERM() == EXIT_FAILURE)
+		if (TERM_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "MULT\n");
         return EXIT_SUCCESS;
 	case DIVOP:
 		consumeNextToken();
-		if (TERM() == EXIT_FAILURE)
+		if (TERM_1() == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		fprintf(filePtrDest, "DIV\n");
         return EXIT_SUCCESS;
@@ -907,7 +941,7 @@ int TERM_()
 	}
 }
 
-int TERM__(char* lable)
+int TERM_3(char* lable)
 {
 	if (getNextToken() == EXIT_FAILURE)
 	{
@@ -919,7 +953,7 @@ int TERM__(char* lable)
 		consumeNextToken();
 		fprintf(filePtrDest, "DECL @\n");
 
-		if (ARGS(lable) == EXIT_FAILURE)
+		if (ARGS_1(lable) == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
 		if (getNextToken() == EXIT_FAILURE)
@@ -930,7 +964,7 @@ int TERM__(char* lable)
 		if (nextToken->type == RPARANTHESIS)
 		{
             consumeNextToken();
-            return TERM_();
+            return TERM_2();
 		}
 		else
 		{
@@ -940,7 +974,8 @@ int TERM__(char* lable)
 	}
 	else
 	{
-        return TERM_();
+        fprintf(filePtrDest, "RVALINT %s\n", lable);
+        return TERM_2();
 	}
 }
 
@@ -957,7 +992,7 @@ int NOTOPERAND()
     {
     case LPARANTHESIS:
         consumeNextToken();
-        if (EXPR() == EXIT_FAILURE)
+        if (EXPR_1() == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
@@ -984,7 +1019,7 @@ int NOTOPERAND()
         fprintf(filePtrDest,"NOT\n");
         return EXIT_SUCCESS;
     case NUM:
-        fprintf(filePtrDest,"PUSHINT %d",nextToken->attribute);
+        fprintf(filePtrDest,"PUSHINT %d\n",nextToken->attribute);
         consumeNextToken();
         return EXIT_SUCCESS;
     case ID:
@@ -998,7 +1033,8 @@ int NOTOPERAND()
         if (nextToken->type == LPARANTHESIS)
         {
             consumeNextToken();
-            if (ARGS(lable) == EXIT_FAILURE)
+            fprintf(filePtrDest, "DECL @\n");
+            if (ARGS_1(lable) == EXIT_FAILURE)
             {
                 return EXIT_FAILURE;
             }
@@ -1020,6 +1056,8 @@ int NOTOPERAND()
         }
         else
         {
+            fprintf(filePtrDest,"RVALINT %s\n",lable);
+            free(lable);
             return EXIT_SUCCESS;
         }
     default:
