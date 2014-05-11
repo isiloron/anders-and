@@ -16,6 +16,10 @@ int lineNumber;
 //lable counter
 int lableCounter;
 
+//local vars counter
+
+int localVarsCounter;
+
 //token list
 TOKENNODE* tokenList;
 

@@ -21,6 +21,7 @@ int prepareGlobalVars(char* fileName)
     }
     lineNumber = 1;
     lableCounter = 0;
+    localVarsCounter = 0;
     nextToken = NULL;
     return EXIT_SUCCESS;
 }

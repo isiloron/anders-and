@@ -38,6 +38,7 @@ int SUM_();
 int TERM();
 int TERM_();
 int TERM__(char* lable);
+int NOTOPERAND();
 
 
 #endif

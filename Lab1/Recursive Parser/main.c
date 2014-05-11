@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
 	if (prepareGlobalVars(argv[1]) == EXIT_FAILURE)
 	{
 		printf("Failed to prepare global varaibles!\n");
+        getchar();
 		return EXIT_FAILURE;
 	}
     /*
@@ -28,11 +29,13 @@ int main(int argc, char* argv[])
             printf("Parsing complete!\n");
         else
             printf("Parsing incomplete!\n");
+        getchar();
     }
 
     fclose(filePtrDest);
     fclose(filePtrSource);
 
 	getchar();
+    return EXIT_SUCCESS;
 }
 

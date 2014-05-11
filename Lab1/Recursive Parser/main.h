@@ -5,6 +5,7 @@
 #include "tokens.h"
 #include "lexicalAnalyzer.h"
 #include "globalvars.h"
+#include "parser.h"
 
 void test_lexical_analyzer(TOKEN* newToken);
 
