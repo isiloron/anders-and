@@ -17,7 +17,6 @@ int lineNumber;
 int lableCounter;
 
 //local vars counter
-
 int localVarsCounter;
 
 //token list
@@ -26,6 +25,7 @@ TOKENNODE* tokenList;
 //next token to be parsed
 TOKEN* nextToken;
 
+//initiate global variables^^
 int prepareGlobalVars(char* fileName);
 
 #endif

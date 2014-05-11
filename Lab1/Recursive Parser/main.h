@@ -7,6 +7,7 @@
 #include "globalvars.h"
 #include "parser.h"
 
+/*Printing out the resulting tokens from the lexical analyzer*/
 void test_lexical_analyzer(TOKEN* newToken);
 
 #endif
