@@ -13,8 +13,8 @@ FILE* filePtrDest;
 //Current line
 int lineNumber;
 
-//lable counter
-int lableCounter;
+//label counter
+int labelCounter;
 
 //local vars counter
 
